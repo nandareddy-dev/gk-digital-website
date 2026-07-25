@@ -4,7 +4,18 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Menu, X, ChevronDown } from "lucide-react";
+import {
+  Menu,
+  X,
+  ChevronDown,
+  Briefcase,
+  Newspaper,
+  Workflow,
+  Award,
+  MessageSquare,
+  HelpCircle,
+  type LucideIcon,
+} from "lucide-react";
 
 const primaryLinks = [
   { label: "Home", href: "/" },
@@ -15,13 +26,64 @@ const primaryLinks = [
   { label: "Contact", href: "/contact" },
 ];
 
-const moreLinks = [
-  { label: "Portfolio", href: "/portfolio" },
-  { label: "Blog", href: "/blog" },
-  { label: "Process", href: "/process" },
-  { label: "Why Choose Us", href: "/why-choose-us" },
-  { label: "Testimonials", href: "/testimonials" },
-  { label: "FAQ", href: "/faq" },
+type MoreLink = {
+  label: string;
+  href: string;
+  description: string;
+  icon: LucideIcon;
+  iconBg: string;
+  iconColor: string;
+};
+
+const moreLinks: MoreLink[] = [
+  {
+    label: "Portfolio",
+    href: "/portfolio",
+    description: "See the projects we've shipped for clients like you.",
+    icon: Briefcase,
+    iconBg: "bg-amber-100",
+    iconColor: "text-amber-600",
+  },
+  {
+    label: "Blog",
+    href: "/blog",
+    description: "Insights and updates from our team, straight from the source.",
+    icon: Newspaper,
+    iconBg: "bg-emerald-100",
+    iconColor: "text-emerald-600",
+  },
+  {
+    label: "Process",
+    href: "/process",
+    description: "How we take a project from kickoff to launch, step by step.",
+    icon: Workflow,
+    iconBg: "bg-blue-100",
+    iconColor: "text-blue-600",
+  },
+  {
+    label: "Why Choose Us",
+    href: "/why-choose-us",
+    description: "What sets our approach apart from other agencies.",
+    icon: Award,
+    iconBg: "bg-orange-100",
+    iconColor: "text-orange-600",
+  },
+  {
+    label: "Testimonials",
+    href: "/testimonials",
+    description: "Real feedback from teams we've partnered with.",
+    icon: MessageSquare,
+    iconBg: "bg-purple-100",
+    iconColor: "text-purple-600",
+  },
+  {
+    label: "FAQ",
+    href: "/faq",
+    description: "Quick answers to the questions we hear most often.",
+    icon: HelpCircle,
+    iconBg: "bg-pink-100",
+    iconColor: "text-pink-600",
+  },
 ];
 
 export default function Navbar() {
@@ -30,7 +92,7 @@ export default function Navbar() {
   const [mobileMoreOpen, setMobileMoreOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
-  const dropdownRef = useRef<HTMLLIElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   function isActive(href: string) {
     if (href === "/") return pathname === "/";
@@ -58,10 +120,6 @@ export default function Navbar() {
     setMobileMoreOpen(false);
   }, [pathname]);
 
-  // Scroll-shrink — the bar starts at its normal (already reduced) size and
-  // compacts slightly further once the page has scrolled, a common premium
-  // pattern that keeps more content visible without the nav ever feeling
-  // like it jumped. Threshold is small since the bar is already compact.
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
     onScroll();
@@ -71,15 +129,11 @@ export default function Navbar() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 backdrop-blur-md transition-all duration-300 ${
-        scrolled
-          ? "border-b border-slate-200 bg-white/95 shadow-[0_2px_10px_rgba(15,23,42,0.06)]"
-          : "border-b border-transparent bg-white/0 shadow-none"
-      }`}
+      className={`fixed left-0 right-0 top-0 z-50 flex justify-center pt-3`}
     >
       <nav
-        className={`mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 transition-[padding] duration-300 sm:px-6 lg:grid lg:grid-cols-[auto_auto_1fr_auto] lg:gap-0 ${
-          scrolled ? "py-1 lg:py-1" : "py-1.5 lg:py-2"
+        className={`relative flex w-full max-w-5xl items-center justify-between gap-3 rounded-full border border-slate-200 bg-white/95 px-4 py-2 shadow-[0_4px_20px_rgba(15,23,42,0.08)] backdrop-blur-md transition-all duration-300 sm:px-5 ${
+          scrolled ? "py-1.5" : "py-2"
         }`}
       >
         <Link
@@ -87,34 +141,26 @@ export default function Navbar() {
           className="flex shrink-0 items-center"
           onClick={() => setOpen(false)}
         >
-          <div
-            className={`relative transition-all duration-300 ${
-              scrolled
-                ? "h-8 w-[105px] sm:h-8 sm:w-[115px] lg:h-9 lg:w-[130px] xl:h-10 xl:w-[145px]"
-                : "h-9 w-[115px] sm:h-9 sm:w-[125px] lg:h-10 lg:w-[140px] xl:h-11 xl:w-[155px]"
-            }`}
-          >
+          <div className="relative h-8 w-[105px] transition-all duration-300 sm:h-9 sm:w-[125px]">
             <Image
               src="/GK_Digital_Logo.jpg"
               alt="GK Digital Solutions"
               fill
-              sizes="(max-width: 1024px) 125px, 155px"
+              sizes="125px"
               className="object-contain object-left"
               priority
             />
           </div>
         </Link>
 
-        <div className="mx-4 hidden h-5 w-px bg-slate-200 lg:mx-5 xl:mx-6 lg:block" />
-
-        <ul className="hidden items-center justify-center gap-0.5 lg:flex xl:gap-1">
+        <ul className="hidden items-center gap-0.5 lg:flex xl:gap-1">
           {primaryLinks.map((link) => {
             const active = isActive(link.href);
             return (
               <li key={link.href} className="shrink-0">
                 <Link
                   href={link.href}
-                  className={`whitespace-nowrap rounded-full px-2 py-1.5 font-mono text-[12px] uppercase tracking-[0.1em] transition-colors xl:px-3 xl:text-[13px] xl:tracking-[0.11em] ${
+                  className={`whitespace-nowrap rounded-full px-3 py-1.5 font-mono text-[12px] uppercase tracking-[0.1em] transition-colors xl:px-3.5 xl:text-[13px] ${
                     active
                       ? "bg-slate-900 text-white"
                       : "text-slate-500 hover:bg-slate-100 hover:text-slate-900"
@@ -131,7 +177,7 @@ export default function Navbar() {
               type="button"
               onClick={() => setMoreOpen((prev) => !prev)}
               aria-expanded={moreOpen}
-              className={`flex items-center gap-1 whitespace-nowrap rounded-full px-2 py-1.5 font-mono text-[12px] uppercase tracking-[0.1em] transition-colors xl:px-3 xl:text-[13px] xl:tracking-[0.11em] ${
+              className={`flex items-center gap-1 whitespace-nowrap rounded-full px-3 py-1.5 font-mono text-[12px] uppercase tracking-[0.1em] transition-colors xl:px-3.5 xl:text-[13px] ${
                 isMoreActive
                   ? "bg-slate-900 text-white"
                   : "text-slate-500 hover:bg-slate-100 hover:text-slate-900"
@@ -147,34 +193,49 @@ export default function Navbar() {
             </button>
 
             {moreOpen && (
-              <div className="absolute right-0 top-full mt-2 w-44 overflow-hidden rounded-xl border border-slate-200 bg-white py-1.5 shadow-lg">
-                {moreLinks.map((link) => {
-                  const active = isActive(link.href);
-                  return (
-                    <Link
-                      key={link.href}
-                      href={link.href}
-                      onClick={() => setMoreOpen(false)}
-                      className={`block px-3.5 py-2 font-mono text-[11px] uppercase tracking-[0.1em] transition-colors ${
-                        active
-                          ? "bg-slate-900 text-white"
-                          : "text-slate-600 hover:bg-slate-100"
-                      }`}
-                    >
-                      {link.label}
-                    </Link>
-                  );
-                })}
+              <div className="absolute left-1/2 top-full mt-3 w-[560px] -translate-x-1/2 overflow-hidden rounded-2xl border border-slate-200 bg-white p-3 shadow-[0_12px_40px_rgba(15,23,42,0.12)]">
+                <div className="grid grid-cols-2 gap-1">
+                  {moreLinks.map((link) => {
+                    const Icon = link.icon;
+                    const active = isActive(link.href);
+                    return (
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        onClick={() => setMoreOpen(false)}
+                        className={`flex items-start gap-3 rounded-xl p-3 transition-colors ${
+                          active ? "bg-slate-100" : "hover:bg-slate-50"
+                        }`}
+                      >
+                        <span
+                          className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${link.iconBg}`}
+                        >
+                          <Icon
+                            className={`h-4 w-4 ${link.iconColor}`}
+                            strokeWidth={2}
+                          />
+                        </span>
+                        <span className="min-w-0">
+                          <span className="block font-sans text-[13.5px] font-medium text-slate-900">
+                            {link.label}
+                          </span>
+                          <span className="mt-0.5 block text-[12px] leading-snug text-slate-500">
+                            {link.description}
+                          </span>
+                        </span>
+                      </Link>
+                    );
+                  })}
+                </div>
               </div>
             )}
           </li>
         </ul>
 
         <div className="flex shrink-0 items-center justify-end gap-2.5">
-          <div className="mx-1 hidden h-5 w-px bg-slate-200 lg:mx-1.5 lg:block" />
           <Link
             href="/contact"
-            className="hidden shrink-0 whitespace-nowrap rounded-full bg-slate-900 px-3.5 py-1.5 font-mono text-[12px] font-medium uppercase tracking-[0.1em] text-white transition-colors hover:bg-[#4C8F2A] lg:block xl:px-4 xl:text-[13px] xl:tracking-[0.11em]"
+            className="hidden shrink-0 whitespace-nowrap rounded-full bg-slate-900 px-3.5 py-1.5 font-mono text-[12px] font-medium uppercase tracking-[0.1em] text-white transition-colors hover:bg-[#4C8F2A] lg:block xl:px-4 xl:text-[13px]"
           >
             Get audit
           </Link>
@@ -193,84 +254,100 @@ export default function Navbar() {
             )}
           </button>
         </div>
-      </nav>
 
-      {open && (
-        <div className="max-h-[calc(100vh-56px)] overflow-y-auto border-t border-slate-200 bg-white px-4 py-4 sm:px-6 lg:hidden">
-          <ul className="flex flex-col gap-1">
-            {primaryLinks.map((link) => {
-              const active = isActive(link.href);
-              return (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    onClick={() => setOpen(false)}
-                    className={`block rounded-lg px-3 py-2 font-mono text-[12px] uppercase tracking-[0.12em] transition-colors ${
-                      active
-                        ? "bg-slate-900 text-white"
-                        : "text-slate-500 hover:bg-slate-100"
-                    }`}
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              );
-            })}
+        {open && (
+          <div className="absolute left-0 right-0 top-full mt-3 max-h-[calc(100vh-120px)] overflow-y-auto rounded-2xl border border-slate-200 bg-white px-4 py-4 shadow-[0_12px_40px_rgba(15,23,42,0.12)] lg:hidden">
+            <ul className="flex flex-col gap-1">
+              {primaryLinks.map((link) => {
+                const active = isActive(link.href);
+                return (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      onClick={() => setOpen(false)}
+                      className={`block rounded-lg px-3 py-2 font-mono text-[12px] uppercase tracking-[0.12em] transition-colors ${
+                        active
+                          ? "bg-slate-900 text-white"
+                          : "text-slate-500 hover:bg-slate-100"
+                      }`}
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                );
+              })}
 
-            <li>
-              <button
-                type="button"
-                onClick={() => setMobileMoreOpen((prev) => !prev)}
-                aria-expanded={mobileMoreOpen}
-                className={`flex w-full items-center justify-between rounded-lg px-3 py-2 font-mono text-[12px] uppercase tracking-[0.12em] transition-colors ${
-                  isMoreActive
-                    ? "bg-slate-900 text-white"
-                    : "text-slate-500 hover:bg-slate-100"
-                }`}
-              >
-                More
-                <ChevronDown
-                  className={`h-3.5 w-3.5 transition-transform ${
-                    mobileMoreOpen ? "rotate-180" : ""
+              <li>
+                <button
+                  type="button"
+                  onClick={() => setMobileMoreOpen((prev) => !prev)}
+                  aria-expanded={mobileMoreOpen}
+                  className={`flex w-full items-center justify-between rounded-lg px-3 py-2 font-mono text-[12px] uppercase tracking-[0.12em] transition-colors ${
+                    isMoreActive
+                      ? "bg-slate-900 text-white"
+                      : "text-slate-500 hover:bg-slate-100"
                   }`}
-                  strokeWidth={2}
-                />
-              </button>
+                >
+                  More
+                  <ChevronDown
+                    className={`h-3.5 w-3.5 transition-transform ${
+                      mobileMoreOpen ? "rotate-180" : ""
+                    }`}
+                    strokeWidth={2}
+                  />
+                </button>
 
-              {mobileMoreOpen && (
-                <ul className="mt-1 flex flex-col gap-1 pl-3">
-                  {moreLinks.map((link) => {
-                    const active = isActive(link.href);
-                    return (
-                      <li key={link.href}>
-                        <Link
-                          href={link.href}
-                          onClick={() => setOpen(false)}
-                          className={`block rounded-lg px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.12em] transition-colors ${
-                            active
-                              ? "bg-slate-900 text-white"
-                              : "text-slate-500 hover:bg-slate-100"
-                          }`}
-                        >
-                          {link.label}
-                        </Link>
-                      </li>
-                    );
-                  })}
-                </ul>
-              )}
-            </li>
-          </ul>
+                {mobileMoreOpen && (
+                  <ul className="mt-1 flex flex-col gap-1 pl-1">
+                    {moreLinks.map((link) => {
+                      const Icon = link.icon;
+                      const active = isActive(link.href);
+                      return (
+                        <li key={link.href}>
+                          <Link
+                            href={link.href}
+                            onClick={() => setOpen(false)}
+                            className={`flex items-start gap-3 rounded-lg px-2 py-2 transition-colors ${
+                              active
+                                ? "bg-slate-100"
+                                : "hover:bg-slate-50"
+                            }`}
+                          >
+                            <span
+                              className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${link.iconBg}`}
+                            >
+                              <Icon
+                                className={`h-3.5 w-3.5 ${link.iconColor}`}
+                                strokeWidth={2}
+                              />
+                            </span>
+                            <span className="min-w-0">
+                              <span className="block font-sans text-[12.5px] font-medium text-slate-900">
+                                {link.label}
+                              </span>
+                              <span className="mt-0.5 block text-[11px] leading-snug text-slate-500">
+                                {link.description}
+                              </span>
+                            </span>
+                          </Link>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+              </li>
+            </ul>
 
-          <Link
-            href="/contact"
-            onClick={() => setOpen(false)}
-            className="mt-5 block rounded-full bg-slate-900 px-4 py-2 text-center font-mono text-[11px] font-medium uppercase tracking-[0.12em] text-white"
-          >
-            Get audit
-          </Link>
-        </div>
-      )}
+            <Link
+              href="/contact"
+              onClick={() => setOpen(false)}
+              className="mt-5 block rounded-full bg-slate-900 px-4 py-2 text-center font-mono text-[11px] font-medium uppercase tracking-[0.12em] text-white"
+            >
+              Get audit
+            </Link>
+          </div>
+        )}
+      </nav>
     </header>
   );
 }
