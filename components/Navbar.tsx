@@ -92,7 +92,8 @@ export default function Navbar() {
   const [mobileMoreOpen, setMobileMoreOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  // const dropdownRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLLIElement>(null);
 
   function isActive(href: string) {
     if (href === "/") return pathname === "/";
