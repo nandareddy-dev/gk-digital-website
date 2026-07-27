@@ -695,95 +695,119 @@ function IndustryStrip() {
   );
 }
 
+// ---------- Mini animated bar chart (dashboard flourish) ----------
+function MiniBars({ color, seed = 1, active = false }: { color: string; seed?: number; active?: boolean }) {
+  const bars = [40, 65, 45, 80, 55, 90, 70].map((v) => ((v + seed * 7) % 100) + 25);
+  return (
+    <div className="flex items-end gap-1" style={{ height: 32 }}>
+      {bars.map((h, i) => (
+        <div
+          key={i}
+          style={{
+            width: 4,
+            borderRadius: 3,
+            background: active ? color : "#D8D6E8",
+            height: active ? `${Math.min(h, 100)}%` : `${Math.min(h, 100) * 0.55}%`,
+            opacity: active ? 0.85 - i * 0.06 : 0.7,
+            transition: `height 500ms cubic-bezier(0.34,1.56,0.64,1) ${i * 40}ms, background 300ms ease`,
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
 // ---------- Services: bento-style grid, one wide highlighted card ----------
 const services = [
-  { icon: Target, title: "Meta & Google Ads", desc: "Full-funnel campaigns built around your actual sales stages, not just impressions — tuned weekly against real close rates.", metric: "3.2x", metricLabel: "avg. ROAS" },
-  { icon: Search, title: "Local SEO", desc: "Google Business Profile, local landing pages and review systems that put you at the top when Hyderabad searches for what you sell.", metric: "1–3", metricLabel: "map pack rank" },
-  { icon: MessageCircle, title: "WhatsApp & CRM Automation", desc: "Every lead auto-tagged, followed up and dropped into your pipeline within minutes of coming in.", metric: "<5min", metricLabel: "response time" },
-  { icon: Palette, title: "Creative & Content", desc: "Reels, carousels and ad creative shot and edited for categories that actually convert, not just look good.", metric: "12+", metricLabel: "assets / month" },
-  { icon: Layout, title: "Website & Landing Pages", desc: "Fast, conversion-focused pages built to match the offer in your ad, so the click doesn't die on arrival.", metric: "<2s", metricLabel: "avg. load time" },
-  { icon: Mail, title: "Email & Retargeting", desc: "Automated sequences that bring back the visitors who didn't convert on the first visit, at a fraction of new-lead cost.", metric: "4x", metricLabel: "cheaper than cold ads" },
-  { icon: ShieldCheck, title: "Brand & Review Management", desc: "We monitor and respond to reviews across Google, Meta and Justdial so a bad week never becomes a bad reputation.", metric: "4.8★", metricLabel: "avg. client rating" },
-  { icon: BarChart3, title: "100% CRM-Tracked Leads", desc: "Every single lead — from every channel — lands in one pipeline. No spreadsheet reconciliation, no lost enquiries, ever.", metric: "100%", metricLabel: "leads tracked", highlighted: true, wide: true },
+  { icon: Target, title: "Meta & Google Ads", desc: "Full-funnel campaigns built around your actual sales stages, not just impressions — tuned weekly against real close rates.", metric: "3.2x", metricLabel: "avg. ROAS", color: "#3D6FF2", slug: "meta-google-ads" },
+  { icon: Search, title: "Local SEO", desc: "Google Business Profile, local landing pages and review systems that put you at the top when Hyderabad searches for what you sell.", metric: "1–3", metricLabel: "map pack rank", color: "#22B07D", slug: "local-seo" },
+  { icon: MessageCircle, title: "WhatsApp & CRM Automation", desc: "Every lead auto-tagged, followed up and dropped into your pipeline within minutes of coming in.", metric: "<5min", metricLabel: "response time", color: "#FF5C8A", slug: "whatsapp-crm-automation" },
+  { icon: Palette, title: "Creative & Content", desc: "Reels, carousels and ad creative shot and edited for categories that actually convert, not just look good.", metric: "12+", metricLabel: "assets / month", color: "#F2A93A", slug: "creative-content" },
+  { icon: Layout, title: "Website & Landing Pages", desc: "Fast, conversion-focused pages built to match the offer in your ad, so the click doesn't die on arrival.", metric: "<2s", metricLabel: "avg. load time", color: "#3D6FF2", slug: "website-landing-pages" },
+  { icon: Mail, title: "Email & Retargeting", desc: "Automated sequences that bring back the visitors who didn't convert on the first visit, at a fraction of new-lead cost.", metric: "4x", metricLabel: "cheaper than cold ads", color: "#6D3AF2", slug: "email-retargeting" },
+  { icon: ShieldCheck, title: "Brand & Review Management", desc: "We monitor and respond to reviews across Google, Meta and Justdial so a bad week never becomes a bad reputation.", metric: "4.8★", metricLabel: "avg. client rating", color: "#22B07D", slug: "brand-review-management" },
+  { icon: BarChart3, title: "100% CRM-Tracked Leads", desc: "Every single lead — from every channel — lands in one pipeline. No spreadsheet reconciliation, no lost enquiries, ever.", metric: "100%", metricLabel: "leads tracked", color: "#6D3AF2", highlighted: true, slug: "crm-tracked-leads" },
 ];
 
-function ServiceCard({ s }: { s: (typeof services)[number] }) {
-  const ref = useRef<HTMLDivElement>(null);
-
-  const handleMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const el = ref.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-    el.style.setProperty("--x", `${x}%`);
-    el.style.setProperty("--y", `${y}%`);
-  };
+function ServiceCard({ s, i }: { s: (typeof services)[number]; i: number }) {
+  const [hover, setHover] = useState(false);
 
   return (
-    <div
-      ref={ref}
-      onMouseMove={handleMove}
-      className={`group relative flex h-full flex-col gap-3 overflow-hidden rounded-[22px] p-4 transition-all duration-300 ease-out sm:gap-4 sm:p-5 md:p-6 ${
-        s.wide ? "sm:col-span-2" : ""
-      } ${
-        s.highlighted
-          ? "text-white shadow-xl"
-          : "bg-ink-panel shadow-[0_2px_20px_rgba(109,58,242,0.08)] hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(109,58,242,0.16)]"
-      }`}
-      style={s.highlighted ? { background: "linear-gradient(135deg, var(--signal), var(--teal))" } : undefined}
+    <Link
+      href={`/services/${s.slug}`}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      className="relative flex h-full min-h-[200px] cursor-pointer flex-col justify-between overflow-hidden rounded-[20px] p-5 transition-all duration-300 ease-out"
+      style={{
+        background: "#ffffff",
+        border: `1.5px solid ${hover ? `${s.color}55` : s.highlighted ? "rgba(109,58,242,0.35)" : "rgba(23,24,51,0.10)"}`,
+        transform: hover ? "translateY(-4px)" : "translateY(0)",
+        boxShadow: hover ? `0 20px 40px -14px ${s.color}40` : "0 2px 12px rgba(23,24,51,0.05)",
+      }}
     >
-      {!s.highlighted && (
-        <div
-          className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-          style={{ background: "radial-gradient(220px circle at var(--x, 50%) var(--y, 50%), rgba(109,58,242,0.08), transparent 65%)" }}
-          aria-hidden="true"
-        />
-      )}
+      <div
+        className="pointer-events-none absolute inset-0 transition-opacity duration-300"
+        style={{
+          opacity: hover ? 0.5 : 0,
+          backgroundImage: `radial-gradient(${s.color}22 1px, transparent 1px)`,
+          backgroundSize: "16px 16px",
+          maskImage: "radial-gradient(circle at top right, black, transparent 70%)",
+          WebkitMaskImage: "radial-gradient(circle at top right, black, transparent 70%)",
+        }}
+      />
 
       <div className="relative flex items-start justify-between">
         <div
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl transition-transform duration-300 ease-out group-hover:scale-110 group-hover:-rotate-6 sm:h-10 sm:w-10"
-          style={{
-            background: s.highlighted ? "rgba(255,255,255,0.2)" : "linear-gradient(135deg, rgba(109,58,242,0.12), rgba(61,111,242,0.12))",
-          }}
+          className="flex h-9 w-9 items-center justify-center rounded-xl transition-colors duration-300"
+          style={{ background: hover ? `${s.color}1A` : "rgba(23,24,51,0.05)" }}
         >
-          <s.icon className={`h-4 w-4 ${s.highlighted ? "text-white" : "text-signal"}`} strokeWidth={1.75} />
+          <s.icon
+            className="h-[18px] w-[18px] transition-colors duration-300"
+            style={{ color: hover ? s.color : "#8B8AA3" }}
+            strokeWidth={1.75}
+          />
         </div>
+        <MiniBars color={s.color} seed={i} active={hover} />
+      </div>
 
-        <div className="text-right">
-          <div className={`font-mono text-base sm:text-lg ${s.highlighted ? "text-white" : "text-signal"}`}>{s.metric}</div>
-          <div className={`font-mono text-[8px] uppercase tracking-wider sm:text-[9px] ${s.highlighted ? "text-white/70" : "text-paper/40"}`}>
-            {s.metricLabel}
+      <div className="relative">
+        {s.highlighted && (
+          <span
+            className="mb-2 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider transition-colors duration-300"
+            style={{
+              background: hover ? "rgba(109,58,242,0.18)" : "rgba(23,24,51,0.06)",
+              color: hover ? "#6D3AF2" : "#8B8AA3",
+            }}
+          >
+            Our guarantee
+          </span>
+        )}
+        <h3 className="font-display text-[15.5px] font-extrabold leading-snug text-[#171833]">{s.title}</h3>
+        <p className="mt-2 text-[12.5px] leading-relaxed text-[#5D5F7A]">{s.desc}</p>
+
+        <div className="mt-3.5 flex items-center justify-between">
+          <div>
+            <span
+              className="font-display text-lg font-extrabold transition-colors duration-300"
+              style={{ color: hover ? s.color : "#171833" }}
+            >
+              {s.metric}
+            </span>
+            <span className="ml-2 text-[10px] uppercase tracking-wider text-[#8B8AA3]">{s.metricLabel}</span>
           </div>
+          <ArrowUpRight
+            className="h-4 w-4 transition-all duration-300"
+            style={{ color: s.color, opacity: hover ? 1 : 0, transform: hover ? "translate(0,0)" : "translate(-4px,4px)" }}
+          />
         </div>
       </div>
-
-      {s.highlighted && (
-        <span className="relative inline-flex w-fit items-center gap-1.5 rounded-full bg-white/15 px-2.5 py-1 font-mono text-[9px] uppercase tracking-wider text-white">
-          <span className="h-1.5 w-1.5 rounded-full bg-white blink-dot" />
-          Our guarantee
-        </span>
-      )}
-
-      <div className="relative flex-1">
-        <h3 className={`font-display text-[14.5px] font-bold leading-snug sm:text-base ${s.highlighted ? "text-white" : "text-paper"}`}>{s.title}</h3>
-        <p className={`mt-1.5 text-[12px] leading-relaxed sm:mt-2 sm:text-[13px] ${s.highlighted ? "text-white/85" : "text-paper/60"}`}>{s.desc}</p>
-      </div>
-
-      <ArrowUpRight
-        className={`h-4 w-4 -translate-x-1 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100 ${
-          s.highlighted ? "text-white" : "text-signal"
-        }`}
-        strokeWidth={2}
-      />
-    </div>
+    </Link>
   );
 }
 
 function Services() {
   return (
-    <section id="services" className="relative py-14 sm:py-16 md:py-24">
+    <section id="services" className="relative bg-ink py-14 sm:py-16 md:py-24">
       <ChevronDivider className="absolute -top-[11px] left-1/2 -translate-x-1/2" />
       <div className="mx-auto max-w-6xl px-5 sm:px-6">
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
@@ -791,25 +815,22 @@ function Services() {
             <div>
               <span className={`font-mono uppercase text-signal ${fluid.eyebrow}`}>What we run</span>
               <h2 className={`mt-2 font-display font-extrabold tracking-tight text-paper sm:mt-3 ${fluid.h2}`}>
-                Eight systems.
-                <br />
-                One pipeline.
+                Eight systems.One pipeline.
               </h2>
             </div>
           </Reveal>
           <Reveal direction="right">
             <p className={`max-w-sm text-paper/60 ${fluid.body}`}>
-              We don&apos;t sell services in isolation — each one feeds the
-              same CRM, so nothing you pay for disappears into a report
-              nobody reads.
+              Live metrics, not sales copy — each card feeds the same CRM,
+              so nothing you pay for disappears into a report nobody reads.
             </p>
           </Reveal>
         </div>
 
-        <div className="mt-8 grid grid-cols-1 gap-3.5 sm:mt-10 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3 md:mt-14 md:gap-5">
+        <div className="mt-8 grid grid-cols-1 gap-4 sm:mt-10 sm:grid-cols-2 lg:grid-cols-4 md:mt-14">
           {services.map((s, i) => (
             <Reveal key={s.title} delay={(i % 3) * 90} direction={i % 3 === 0 ? "left" : i % 3 === 1 ? "up" : "right"}>
-              <ServiceCard s={s} />
+              <ServiceCard s={s} i={i} />
             </Reveal>
           ))}
         </div>
