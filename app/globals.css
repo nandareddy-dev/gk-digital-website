@@ -1,15 +1,17 @@
 @import "tailwindcss";
 
 :root {
-  --ink: #ffffff;
-  --ink-panel: #f6f8fa;
-  --paper: #14161f;
-  --signal: #1B54C7;
-  --signal-dim: #1b4f9c;
-  --line: #e5e8ec;
-  --teal: #7AC142;
+  --ink: #FAF9FF;            /* page background - light lavender white */
+  --ink-panel: #ffffff;      /* card / panel background */
+  --paper: #171833;          /* primary text - dark navy */
+  --signal: #6D3AF2;         /* primary purple */
+  --signal-dim: #5A2EDB;
+  --teal: #3D6FF2;           /* secondary blue (var name kept as "teal" so
+                                 no other component files need renaming) */
+  --line: rgba(23,24,51,0.08);
+  --accent-pink: #FF5C8A;
 
-  --font-display: var(--font-space-grotesk);
+  --font-display: var(--font-space-grotesk); /* map to Sora in layout.tsx */
   --font-body: var(--font-inter);
   --font-mono: var(--font-plex-mono);
 }
@@ -32,7 +34,7 @@
 }
 
 html {
-  background: #ffffff;
+  background: var(--ink);
 }
 
 body {
@@ -64,11 +66,8 @@ body {
 }
 
 @keyframes dash-travel {
-  to {
-    stroke-dashoffset: -1000;
-  }
+  to { stroke-dashoffset: -1000; }
 }
-
 .pulse-path {
   stroke-dasharray: 6 10;
   animation: dash-travel 18s linear infinite;
@@ -78,22 +77,38 @@ body {
   0%, 100% { opacity: 1; transform: scale(1); }
   50% { opacity: 0.4; transform: scale(0.8); }
 }
-
 .blink-dot {
   animation: blink-dot 2.2s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+@keyframes spin-slow {
+  to { transform: rotate(360deg); }
+}
+.spin-slow {
+  animation: spin-slow 24s linear infinite;
 }
 
 @keyframes rise-in {
   from { opacity: 0; transform: translateY(14px); }
   to { opacity: 1; transform: translateY(0); }
 }
-
 .rise-in {
   animation: rise-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-/* Use this class on any heading/phrase to get the logo's blue-to-green
-   gradient text effect — e.g. <span className="brand-gradient-text"> */
+/* Soft card shadow used across cards, stats, testimonial panels */
+.soft-card-shadow {
+  box-shadow: 0 2px 20px rgba(109, 58, 242, 0.08);
+}
+.soft-card-shadow:hover {
+  box-shadow: 0 12px 30px rgba(109, 58, 242, 0.15);
+}
+
 .brand-gradient-text {
   background: linear-gradient(90deg, var(--signal), var(--teal));
   -webkit-background-clip: text;

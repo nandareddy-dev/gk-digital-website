@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import {
   ArrowUpRight,
@@ -34,11 +33,19 @@ import {
   ChevronLeft,
   Scissors,
   Quote,
-  Zap,
   Rocket,
   Compass,
   Award,
-  PlayCircle,
+  Heart,
+  ThumbsUp,
+  GraduationCap,
+  Shirt,
+  Wrench,
+  Car,
+  Plane,
+  PartyPopper,
+  Briefcase,
+  Dumbbell,
 } from "lucide-react";
 import Reveal from "@/components/Reveal";
 import CountUp from "@/components/CountUp";
@@ -46,26 +53,19 @@ import CountUp from "@/components/CountUp";
 const WHATSAPP_LINK =
   "https://wa.me/917569622606?text=Hi!%20I%27d%20like%20to%20know%20more%20about%20GK%20Digital%20Solutions%27%20services.";
 
-/* =========================================================================
-   FLUID TYPE SCALE — clamp() based, no breakpoint jank between mobile/tablet/desktop.
-   Every major heading scales continuously with viewport width instead of
-   jumping at fixed points. This is the backbone of the mobile fix.
-   ========================================================================= */
 const fluid = {
-  hero: "text-[clamp(1.7rem,6.4vw,4rem)] leading-[1.15]",
-  h2: "text-[clamp(1.4rem,4.4vw,2.5rem)] leading-[1.18]",
-  h3: "text-[clamp(1.05rem,2.6vw,1.25rem)] leading-snug",
-  lead: "text-[clamp(0.9rem,1.9vw,1.125rem)] leading-relaxed",
-  body: "text-[clamp(0.8125rem,1.5vw,0.9375rem)] leading-relaxed",
-  eyebrow: "text-[clamp(0.625rem,1.3vw,0.75rem)] tracking-[0.18em]",
-  stat: "text-[clamp(1.375rem,4.2vw,1.875rem)]",
-  bigStat: "text-[clamp(1.875rem,5vw,2.5rem)]",
+  hero: "text-[clamp(1.6rem,4.6vw,2.9rem)] leading-[1.16]",
+  h2: "text-[clamp(1.25rem,3.6vw,2.1rem)] leading-[1.2]",
+  h3: "text-[clamp(1rem,2.2vw,1.15rem)] leading-snug",
+  lead: "text-[clamp(0.85rem,1.6vw,1rem)] leading-relaxed",
+  body: "text-[clamp(0.78rem,1.3vw,0.875rem)] leading-relaxed",
+  eyebrow: "text-[clamp(0.6rem,1.1vw,0.7rem)] tracking-[0.16em]",
+  bigStat: "text-[clamp(1.6rem,4.2vw,2.1rem)]",
 };
 
 // ---------- Global page-level flourishes ----------
 function ScrollProgress() {
   const [progress, setProgress] = useState(0);
-
   useEffect(() => {
     const onScroll = () => {
       const h = document.documentElement;
@@ -77,38 +77,16 @@ function ScrollProgress() {
     onScroll();
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
-
   return (
     <div className="fixed left-0 top-0 z-[60] h-[2px] w-full bg-transparent" aria-hidden="true">
       <div
         className="h-full transition-[width] duration-150 ease-out"
-        style={{
-          width: `${progress}%`,
-          background: "linear-gradient(90deg, var(--signal), var(--teal))",
-        }}
+        style={{ width: `${progress}%`, background: "linear-gradient(90deg, var(--signal), var(--teal))" }}
       />
     </div>
   );
 }
 
-function GrainOverlay() {
-  return (
-    <svg
-      className="pointer-events-none fixed inset-0 z-[55] h-full w-full opacity-[0.035] mix-blend-overlay"
-      aria-hidden="true"
-    >
-      <filter id="grain-filter">
-        <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch" />
-        <feColorMatrix type="saturate" values="0" />
-      </filter>
-      <rect width="100%" height="100%" filter="url(#grain-filter)" />
-    </svg>
-  );
-}
-
-// ---------- Cursor aura: a soft, deliberately subtle glow that trails the
-// pointer across the whole page. Desktop only (mouse-driven), off on touch.
-// This is the "premium SaaS" signature touch — quiet, not gimmicky.
 function CursorAura() {
   const auraRef = useRef<HTMLDivElement>(null);
   const pos = useRef({ x: 0, y: 0 });
@@ -145,26 +123,21 @@ function CursorAura() {
   return (
     <div
       ref={auraRef}
-      className="pointer-events-none fixed left-0 top-0 z-[1] hidden h-[520px] w-[520px] rounded-full opacity-[0.06] blur-[110px] md:block"
+      className="pointer-events-none fixed left-0 top-0 z-[1] hidden h-[520px] w-[520px] rounded-full opacity-[0.10] blur-[110px] md:block"
       style={{ background: "radial-gradient(circle, var(--signal), var(--teal) 60%, transparent 75%)" }}
       aria-hidden="true"
     />
   );
 }
 
-// ---------- Sticky mini CTA bar — appears once the hero has scrolled out of
-// view, gives desktop visitors a persistent low-friction path to contact
-// without repeating the full CTA block on every section.
 function StickyCTABar() {
   const [visible, setVisible] = useState(false);
-
   useEffect(() => {
     const hero = document.getElementById("top");
     if (!hero) return;
-    const io = new IntersectionObserver(
-      ([entry]) => setVisible(!entry.isIntersecting),
-      { rootMargin: "-10% 0px 0px 0px" }
-    );
+    const io = new IntersectionObserver(([entry]) => setVisible(!entry.isIntersecting), {
+      rootMargin: "-10% 0px 0px 0px",
+    });
     io.observe(hero);
     return () => io.disconnect();
   }, []);
@@ -176,9 +149,9 @@ function StickyCTABar() {
       }`}
       aria-hidden={!visible}
     >
-      <div className="flex items-center gap-4 rounded-full border border-line bg-ink-panel/90 py-2 pl-5 pr-2 shadow-2xl backdrop-blur-xl">
+      <div className="flex items-center gap-4 rounded-full border border-line bg-ink-panel/95 py-2 pl-5 pr-2 shadow-[0_8px_30px_rgba(109,58,242,0.18)] backdrop-blur-xl">
         <span className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-wider text-paper/70">
-          <span className="h-1.5 w-1.5 rounded-full bg-teal blink-dot" />
+          <span className="h-1.5 w-1.5 rounded-full bg-signal blink-dot" />
           Free audit, 24h turnaround
         </span>
         <Link
@@ -198,7 +171,7 @@ function ChevronDivider({ className = "" }: { className?: string }) {
   return (
     <div className={`relative flex justify-center ${className}`} aria-hidden="true">
       <div className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-line" />
-      <svg width="40" height="20" viewBox="0 0 44 22" className="chevron-divider relative bg-ink px-2">
+      <svg width="40" height="20" viewBox="0 0 44 22" className="relative bg-ink px-2">
         <defs>
           <linearGradient id="chev-grad" x1="0" y1="0" x2="1" y2="0">
             <stop offset="0%" stopColor="var(--signal)" />
@@ -211,198 +184,17 @@ function ChevronDivider({ className = "" }: { className?: string }) {
   );
 }
 
-// ---------- PulseLine ----------
-function PulseLine({ className = "" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 1200 160" fill="none" className={className} preserveAspectRatio="none" aria-hidden="true">
-      <defs>
-        <linearGradient id="pulse-fade" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stopColor="var(--signal)" stopOpacity="0" />
-          <stop offset="10%" stopColor="var(--signal)" stopOpacity="1" />
-          <stop offset="55%" stopColor="var(--teal)" stopOpacity="1" />
-          <stop offset="90%" stopColor="var(--teal)" stopOpacity="1" />
-          <stop offset="100%" stopColor="var(--teal)" stopOpacity="0" />
-        </linearGradient>
-        <filter id="pulse-glow" x="-20%" y="-100%" width="140%" height="300%">
-          <feGaussianBlur stdDeviation="4" result="blur" />
-          <feMerge>
-            <feMergeNode in="blur" />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
-        </filter>
-      </defs>
-      <path
-        d="M0,120 L90,120 L120,60 L150,140 L180,40 L210,120 L260,120 L290,90 L320,120 L420,120 L450,70 L480,130 L510,50 L540,120 L620,120 L650,95 L680,120 L780,120 L810,55 L840,135 L870,30 L900,120 L980,120 L1010,85 L1040,120 L1200,120"
-        stroke="var(--line)"
-        strokeWidth="1"
-        opacity="0.5"
-      />
-      <path
-        d="M0,120 L90,120 L120,60 L150,140 L180,40 L210,120 L260,120 L290,90 L320,120 L420,120 L450,70 L480,130 L510,50 L540,120 L620,120 L650,95 L680,120 L780,120 L810,55 L840,135 L870,30 L900,120 L980,120 L1010,85 L1040,120 L1200,120"
-        stroke="url(#pulse-fade)"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="pulse-path"
-        filter="url(#pulse-glow)"
-        opacity="0.9"
-      />
-      <circle cx="1040" cy="120" r="8" fill="var(--teal)" opacity="0.25" className="blink-dot" />
-      <circle cx="1040" cy="120" r="4" fill="var(--teal)" className="blink-dot" />
-    </svg>
-  );
-}
-
-// ---------- Hero image mockup ----------
-function DashboardMockup() {
-  const wrapRef = useRef<HTMLDivElement>(null);
-
-  const handleMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const el = wrapRef.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 6;
-    const y = ((e.clientY - rect.top) / rect.height - 0.5) * -6;
-    el.style.setProperty("--tilt-x", `${y}deg`);
-    el.style.setProperty("--tilt-y", `${x}deg`);
-  };
-
-  const handleLeave = () => {
-    const el = wrapRef.current;
-    if (!el) return;
-    el.style.setProperty("--tilt-x", "0deg");
-    el.style.setProperty("--tilt-y", "0deg");
-  };
-
-  return (
-    <div className="relative block max-w-full">
-      <style>{`
-        @keyframes badge-float {
-          0%, 100% { transform: translateY(0px) rotate(0deg); }
-          50% { transform: translateY(-8px) rotate(-2deg); }
-        }
-        @keyframes image-float {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-14px); }
-        }
-        @keyframes orbit-spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-        .mockup-image {
-          animation: image-float 7s ease-in-out infinite;
-          transform: perspective(1400px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
-          transition: transform 0.25s ease-out;
-        }
-        .mockup-badge { animation: badge-float 5s ease-in-out infinite; }
-        .orbit-ring { animation: orbit-spin 22s linear infinite; transform-origin: center; }
-        @media (prefers-reduced-motion: reduce) {
-          .mockup-image, .mockup-badge, .orbit-ring { animation: none !important; transform: none !important; }
-        }
-      `}</style>
-
-      {/* Faint rotating orbit ring behind the mockup — a small premium detail
-          that reads as "live system" without competing with the screenshot. */}
-      <svg
-        className="orbit-ring pointer-events-none absolute -inset-6 -z-10 hidden opacity-30 sm:block"
-        viewBox="0 0 100 100"
-        aria-hidden="true"
-      >
-        <circle cx="50" cy="50" r="48" fill="none" stroke="url(#orbit-grad)" strokeWidth="0.4" strokeDasharray="1 4" />
-        <defs>
-          <linearGradient id="orbit-grad" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="var(--signal)" />
-            <stop offset="100%" stopColor="var(--teal)" />
-          </linearGradient>
-        </defs>
-      </svg>
-
-      <div
-        ref={wrapRef}
-        onMouseMove={handleMove}
-        onMouseLeave={handleLeave}
-        className="mockup-image relative"
-        style={{ transformStyle: "preserve-3d" }}
-      >
-        <div
-          className="pointer-events-none absolute -inset-4 -z-10 rounded-[2rem] opacity-30 blur-2xl sm:-inset-6"
-          style={{ background: "linear-gradient(135deg, var(--signal), var(--teal))" }}
-          aria-hidden="true"
-        />
-        <div
-          className="pointer-events-none absolute -inset-px rounded-2xl opacity-60"
-          style={{
-            background: "linear-gradient(135deg, var(--signal), transparent 40%, var(--teal))",
-            padding: "1px",
-            WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
-            WebkitMaskComposite: "xor",
-            maskComposite: "exclude",
-          }}
-          aria-hidden="true"
-        />
-        <Image
-          src="/hero-dashboard.png"
-          alt="GK Digital Solutions analytics dashboard"
-          width={1100}
-          height={733}
-          priority
-          className="h-auto w-full rounded-2xl ring-1 ring-line/60 shadow-2xl"
-        />
-
-        {/* Compact badges — scaled down and repositioned so they never clip
-            off-screen or cause horizontal overflow on narrow viewports */}
-        <div
-          className="mockup-badge absolute -left-1 top-4 flex scale-[0.75] items-center gap-1.5 rounded-lg border border-line bg-ink-panel/95 px-2.5 py-2 shadow-xl backdrop-blur-md origin-top-left sm:-left-4 sm:top-6 sm:scale-90 md:-left-6 md:top-8 md:scale-100 md:gap-2 md:rounded-xl md:px-4 md:py-3"
-          style={{ animationDelay: "1s" }}
-        >
-          <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-teal md:h-4 md:w-4" strokeWidth={2} />
-          <div>
-            <div className="text-[11px] font-semibold text-paper md:text-xs">New lead</div>
-            <div className="text-[9px] text-paper/40 md:text-[10px]">synced to CRM · 2s ago</div>
-          </div>
-        </div>
-
-        <div
-          className="mockup-badge absolute -bottom-3 -right-1 flex scale-[0.75] items-center gap-1.5 rounded-lg border border-line bg-ink-panel/95 px-2.5 py-2 shadow-xl backdrop-blur-md origin-bottom-right sm:-bottom-4 sm:-right-3 sm:scale-90 md:-bottom-4 md:-right-4 md:scale-100 md:gap-2 md:rounded-xl md:px-4 md:py-3"
-          style={{ animationDelay: "2.2s" }}
-        >
-          <TrendingUp className="h-3.5 w-3.5 shrink-0 text-signal md:h-4 md:w-4" strokeWidth={2} />
-          <div>
-            <div className="text-[11px] font-semibold text-paper md:text-xs">
-              <CountUp end={18} /> brands
-            </div>
-            <div className="text-[9px] text-paper/40 md:text-[10px]">live right now</div>
-          </div>
-        </div>
-
-        <div
-          className="mockup-badge absolute -left-4 bottom-10 hidden scale-90 items-center gap-1.5 rounded-lg border border-line bg-ink-panel/95 px-3 py-2 shadow-xl backdrop-blur-md origin-bottom-left lg:flex"
-          style={{ animationDelay: "0.4s" }}
-        >
-          <Zap className="h-3.5 w-3.5 shrink-0 text-teal" strokeWidth={2} />
-          <div>
-            <div className="text-xs font-semibold text-paper">Auto follow-up sent</div>
-            <div className="text-[10px] text-paper/40">via WhatsApp</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 // ---------- Magnetic CTA button ----------
 function MagneticLink({
   href,
   children,
   className = "",
   style,
-  external = false,
 }: {
   href: string;
   children: React.ReactNode;
   className?: string;
   style?: React.CSSProperties;
-  external?: boolean;
 }) {
   const ref = useRef<HTMLAnchorElement>(null);
 
@@ -414,13 +206,10 @@ function MagneticLink({
     const y = e.clientY - rect.top - rect.height / 2;
     el.style.transform = `translate(${x * 0.12}px, ${y * 0.25}px)`;
   };
-
   const handleLeave = () => {
     const el = ref.current;
     if (el) el.style.transform = "translate(0px, 0px)";
   };
-
-  const props = external ? { target: "_blank", rel: "noopener noreferrer" } : {};
 
   return (
     <Link
@@ -428,249 +217,479 @@ function MagneticLink({
       ref={ref}
       onMouseMove={handleMove}
       onMouseLeave={handleLeave}
-      className={`magnetic-btn transition-transform duration-200 ease-out ${className}`}
+      className={`transition-transform duration-200 ease-out ${className}`}
       style={style}
-      {...props}
     >
       {children}
     </Link>
   );
 }
 
-// ---------- Hero ----------
-function Hero() {
+// ---------- Floating badge (gradient orb hero) ----------
+function FloatBadge({
+  icon: Icon,
+  style,
+  color,
+  delay,
+}: {
+  icon: React.ElementType;
+  style: React.CSSProperties;
+  color: string;
+  delay: number;
+}) {
   return (
-    <section id="top" className="relative overflow-hidden pt-28 pb-14 sm:pt-32 md:pt-40 md:pb-20">
-      <style>{`
-        @keyframes mesh-drift {
-          0%, 100% { transform: translate(0, 0) scale(1); }
-          50% { transform: translate(-4%, 3%) scale(1.08); }
-        }
-        .mesh-blob { animation: mesh-drift 14s ease-in-out infinite; }
-        .mesh-blob-2 { animation: mesh-drift 18s ease-in-out infinite reverse; }
-        .hero-gradient-text { background-size: 200% auto; animation: shine 6s linear infinite; }
-        @keyframes shine { to { background-position: 200% center; } }
-        @keyframes grid-fade { 0%, 100% { opacity: 0.05; } 50% { opacity: 0.1; } }
-        .hero-grid { animation: grid-fade 8s ease-in-out infinite; background-size: 40px 40px; }
-        @media (min-width: 768px) { .hero-grid { background-size: 56px 56px; } }
-        @keyframes scroll-hint {
-          0% { transform: translateY(0); opacity: 0; }
-          30% { opacity: 1; }
-          70% { opacity: 1; }
-          100% { transform: translateY(10px); opacity: 0; }
-        }
-        .scroll-hint-dot { animation: scroll-hint 1.8s ease-in-out infinite; }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        @keyframes particle-drift {
-          0% { transform: translate(0, 0); opacity: 0; }
-          10% { opacity: 0.6; }
-          90% { opacity: 0.6; }
-          100% { transform: translate(var(--px, 40px), -140px); opacity: 0; }
-        }
-        .hero-particle { animation: particle-drift linear infinite; }
-        @media (prefers-reduced-motion: reduce) {
-          .mesh-blob, .mesh-blob-2, .hero-gradient-text, .hero-grid, .scroll-hint-dot, .hero-particle { animation: none !important; }
-        }
-      `}</style>
+    <div
+      className="absolute flex h-11 w-11 items-center justify-center rounded-full shadow-lg"
+      style={{ ...style, background: color, animation: `float 4.5s ease-in-out ${delay}s infinite` }}
+    >
+      <Icon className="h-5 w-5 text-white" strokeWidth={2} />
+    </div>
+  );
+}
 
-      <div
-        className="hero-grid pointer-events-none absolute inset-0 -z-10"
-        style={{
-          backgroundImage:
-            "linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px)",
-          maskImage: "radial-gradient(ellipse 60% 50% at 50% 0%, black, transparent)",
-        }}
-        aria-hidden="true"
-      />
+// ---------- Doodle squiggle accent (hand-drawn feel near headlines) ----------
+function DoodleAccent({ className = "" }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 60 40"
+      className={`pointer-events-none absolute h-8 w-12 ${className}`}
+      style={{ animation: "float 3.8s ease-in-out infinite" }}
+      aria-hidden="true"
+    >
+      <path d="M6 30 Q2 20 10 16 Q18 12 14 4" stroke="var(--signal)" strokeWidth="2.5" fill="none" strokeLinecap="round" opacity="0.55" />
+      <path d="M40 8 L48 4 M40 8 L46 14" stroke="var(--teal)" strokeWidth="2.5" fill="none" strokeLinecap="round" opacity="0.55" />
+    </svg>
+  );
+}
 
-      <div
-        className="mesh-blob pointer-events-none absolute -right-24 top-0 h-64 w-64 rounded-full opacity-20 blur-3xl sm:-right-40 sm:h-96 sm:w-96"
-        style={{ background: "linear-gradient(135deg, var(--signal), var(--teal))" }}
-        aria-hidden="true"
-      />
-      <div
-        className="mesh-blob-2 pointer-events-none absolute -left-20 bottom-0 h-48 w-48 rounded-full opacity-10 blur-3xl sm:-left-32 sm:h-72 sm:w-72"
-        style={{ background: "linear-gradient(135deg, var(--teal), var(--signal))" }}
-        aria-hidden="true"
-      />
+// ---------- Pin marker that pops in with a bounce (map / location style) ----------
+function PopPin({ icon: Icon, style, delay }: { icon: React.ElementType; style: React.CSSProperties; delay: number }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
 
-      {/* Ambient rising particles — a quiet "signal" motif rather than
-          decoration for its own sake: small dots drifting up like data
-          points landing in a pipeline. Hidden on mobile to protect
-          performance and keep the small viewport uncluttered. */}
-      <div className="pointer-events-none absolute inset-0 -z-10 hidden overflow-hidden md:block" aria-hidden="true">
-        {[...Array(10)].map((_, i) => (
-          <span
-            key={i}
-            className="hero-particle absolute h-1 w-1 rounded-full"
-            style={
-              {
-                left: `${8 + i * 9.5}%`,
-                bottom: "-10px",
-                background: i % 2 === 0 ? "var(--signal)" : "var(--teal)",
-                animationDuration: `${9 + (i % 5) * 2}s`,
-                animationDelay: `${i * 0.9}s`,
-                "--px": `${(i % 3) * 20 - 20}px`,
-              } as React.CSSProperties
-            }
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => setVisible(true), delay);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.3 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [delay]);
+
+  return (
+    <div
+      ref={ref}
+      className="absolute flex h-9 w-9 items-center justify-center rounded-full bg-ink-panel shadow-[0_4px_16px_rgba(109,58,242,0.25)] transition-all duration-500"
+      style={{
+        ...style,
+        transform: visible ? "scale(1) translateY(0)" : "scale(0.3) translateY(8px)",
+        opacity: visible ? 1 : 0,
+        transitionTimingFunction: "cubic-bezier(0.34, 1.56, 0.64, 1)",
+      }}
+    >
+      <Icon className="h-4 w-4 text-signal" strokeWidth={2} />
+    </div>
+  );
+}
+
+// ---------- Hero image carousel (5 slides, auto-rotating, crossfade + scale) ----------
+const heroSlides = [
+  { icon: Target, label: "Meta & Google Ads", metric: "3.2x ROAS", gradient: "linear-gradient(135deg, #6D3AF2, #A78BFA)" },
+  { icon: Search, label: "Local SEO", metric: "Top 3 rank", gradient: "linear-gradient(135deg, #3D6FF2, #6D3AF2)" },
+  { icon: MessageCircle, label: "WhatsApp & CRM Automation", metric: "<5min response", gradient: "linear-gradient(135deg, #FF5C8A, #6D3AF2)" },
+  { icon: Palette, label: "Creative & Content", metric: "12+ assets / mo", gradient: "linear-gradient(135deg, #F2A93A, #FF5C8A)" },
+  { icon: BarChart3, label: "100% CRM-Tracked Leads", metric: "Zero leads lost", gradient: "linear-gradient(135deg, #22B07D, #3D6FF2)" },
+];
+
+function HeroCarousel() {
+  const [active, setActive] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => setActive((i) => (i + 1) % heroSlides.length), 3200);
+    return () => clearInterval(id);
+  }, []);
+
+  return (
+    <div className="relative mx-auto flex h-[280px] w-[280px] items-center justify-center sm:h-[360px] sm:w-[360px]">
+      <div className="spin-slow absolute inset-0 rounded-full border-2 border-dashed border-signal/25" />
+
+      <div className="relative h-[230px] w-[230px] overflow-hidden rounded-full shadow-2xl sm:h-[300px] sm:w-[300px]">
+        {heroSlides.map((slide, i) => (
+          <div
+            key={slide.label}
+            className="absolute inset-0 flex flex-col items-center justify-center gap-3 px-6 text-center transition-all duration-700 ease-out"
+            style={{
+              background: slide.gradient,
+              opacity: active === i ? 1 : 0,
+              transform: active === i ? "scale(1) rotate(0deg)" : "scale(1.15) rotate(6deg)",
+              pointerEvents: active === i ? "auto" : "none",
+            }}
+          >
+            <slide.icon className="h-11 w-11 text-white" strokeWidth={1.5} />
+            <span className="text-[13px] font-bold leading-snug text-white">{slide.label}</span>
+            <span className="text-lg font-extrabold text-white/90">{slide.metric}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* dot indicators */}
+      <div className="absolute -bottom-8 left-1/2 flex -translate-x-1/2 items-center gap-1.5">
+        {heroSlides.map((s, i) => (
+          <button
+            key={s.label}
+            onClick={() => setActive(i)}
+            aria-label={`Show ${s.label}`}
+            className="h-1.5 rounded-full transition-all duration-300"
+            style={{ width: active === i ? "20px" : "6px", background: active === i ? "var(--signal)" : "var(--line)" }}
           />
         ))}
       </div>
 
-      {/* min-w-0 on the grid + text column is the key overflow fix: without it,
-          flex/grid children default to min-width:auto and can push wider than
-          the viewport on small phones, causing horizontal scroll. */}
-      <div className="relative mx-auto grid max-w-6xl min-w-0 gap-8 px-5 sm:px-6 md:grid-cols-[1.1fr_0.9fr] md:items-center md:gap-12">
-        <div className="min-w-0">
-          <Reveal>
-            <div className={`flex items-center gap-2 font-mono uppercase text-teal ${fluid.eyebrow}`}>
-              <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-teal blink-dot" />
-              <span>Live across 40+ campaigns · Hyderabad</span>
+      <FloatBadge icon={Heart} color="#FF5C8A" style={{ top: "2%", left: "-4%" }} delay={0} />
+      <FloatBadge icon={MessageCircle} color="var(--teal)" style={{ top: "10%", right: "-8%" }} delay={0.6} />
+      <FloatBadge icon={ThumbsUp} color="#22B07D" style={{ bottom: "14%", left: "-10%" }} delay={1.2} />
+      <FloatBadge icon={Sparkles} color="#F2A93A" style={{ bottom: "2%", right: "2%" }} delay={1.8} />
+    </div>
+  );
+}
+
+/* ============================================================================
+   HERO — gradient orb illustration, floating icon badges, light theme.
+   ============================================================================ */
+function Hero() {
+  return (
+    <section
+      id="top"
+      className="relative isolate overflow-hidden pb-16 pt-20 sm:pb-16 md:pt-24"
+    >
+      <div
+        className="pointer-events-none absolute -top-20 -left-20 h-[420px] w-[420px] rounded-full opacity-50 blur-[100px]"
+        style={{ background: "radial-gradient(circle, #C9B6FF, transparent 70%)" }}
+      />
+      <div
+        className="pointer-events-none absolute top-40 -right-32 h-[420px] w-[420px] rounded-full opacity-50 blur-[100px]"
+        style={{ background: "radial-gradient(circle, #A9C6FF, transparent 70%)" }}
+      />
+
+      <div className="relative z-10 mx-auto grid w-full max-w-6xl min-w-0 grid-cols-1 items-center gap-10 px-5 sm:px-6 md:grid-cols-2">
+        <div>
+          <Reveal direction="left">
+            <span
+              className={`inline-flex items-center gap-2 rounded-full bg-ink-panel px-4 py-1.5 font-mono uppercase text-signal shadow-[0_2px_12px_rgba(109,58,242,0.15)] ${fluid.eyebrow}`}
+            >
+              <span className="h-1.5 w-1.5 rounded-full bg-signal blink-dot" />
+              Live across 40+ campaigns · Hyderabad
+            </span>
+          </Reveal>
+
+          <Reveal delay={80} direction="left">
+            <div className="relative">
+              <DoodleAccent className="-top-6 left-[40%] hidden sm:block" />
+              <h1 className={`mt-6 max-w-xl break-words font-display font-extrabold tracking-tight text-paper ${fluid.hero}`}>
+                Your ad spend, tracked like a pipeline —{" "}
+                <span className="brand-gradient-text">not a vanity metric.</span>
+              </h1>
             </div>
           </Reveal>
 
-          <Reveal delay={80}>
-            <h1 className={`mt-4 break-words font-display font-semibold tracking-tight text-paper sm:mt-6 ${fluid.hero}`}>
-              Your ad spend, tracked like a pipeline —{" "}
-              <span
-                className="hero-gradient-text bg-clip-text text-transparent"
-                style={{ backgroundImage: "linear-gradient(90deg, var(--signal), var(--teal), var(--signal))" }}
-              >
-                not a vanity metric.
-              </span>
-            </h1>
-          </Reveal>
-
-          <Reveal delay={160}>
-            <p className={`mt-4 max-w-xl text-paper/70 sm:mt-6 ${fluid.lead}`}>
-              GK Digital Solutions is a Hyderabad-based digital marketing agency
-              running Meta, Google and WhatsApp campaigns for interior design,
-              real estate, hospitality and skin &amp; hair clinics — wiring
-              every lead straight into your CRM, so you see what closes, not
-              just what clicks.
+          <Reveal delay={160} direction="left">
+            <p className={`mt-5 max-w-md text-paper/65 ${fluid.lead}`}>
+              GK Digital Solutions is a Hyderabad-based digital marketing
+              agency running Meta, Google and WhatsApp campaigns for
+              interior design, real estate, hospitality and skin &amp; hair
+              clinics — wiring every lead straight into your CRM.
             </p>
           </Reveal>
 
-          <Reveal delay={240}>
-            <div className="mt-7 flex flex-wrap items-center gap-3 sm:mt-9 sm:gap-4">
+          <Reveal delay={240} direction="up">
+            <div className="mt-8 flex flex-wrap items-center gap-4">
               <MagneticLink
                 href="/contact"
-                className="flex min-h-[46px] items-center rounded-full px-5 font-mono text-[12px] uppercase tracking-wider text-white shadow-lg sm:px-6 sm:text-[13px]"
+                className="flex min-h-[48px] items-center gap-2 rounded-full px-6 font-mono text-[13px] font-medium uppercase tracking-wider text-white shadow-lg"
                 style={{
                   background: "linear-gradient(90deg, var(--signal), var(--teal))",
-                  boxShadow: "0 10px 30px -8px rgba(27,84,199,0.45)",
+                  boxShadow: "0 12px 28px -8px rgba(109,58,242,0.5)",
                 }}
               >
                 Book a free audit
+                <ArrowRight className="h-4 w-4" strokeWidth={2.2} />
               </MagneticLink>
               <MagneticLink
                 href="#results"
-                className="flex min-h-[46px] items-center rounded-full border border-line px-5 font-mono text-[12px] uppercase tracking-wider text-paper/80 hover:border-signal/50 hover:text-signal sm:px-6 sm:text-[13px]"
+                className="flex min-h-[48px] items-center gap-1 rounded-full bg-ink-panel px-6 font-mono text-[13px] font-medium uppercase tracking-wider text-paper shadow-[0_2px_12px_rgba(109,58,242,0.1)] hover:text-signal"
               >
                 See results
               </MagneticLink>
             </div>
           </Reveal>
 
-          <Reveal delay={320}>
-            <div className="no-scrollbar mt-10 flex snap-x snap-mandatory gap-5 overflow-x-auto border-t border-line pt-6 max-w-xl sm:mt-14 sm:gap-6 md:grid md:grid-cols-3 md:overflow-visible md:pt-8">
-              <div className="min-w-[122px] shrink-0 snap-start md:min-w-0">
-                <div className={`font-display font-semibold text-paper ${fluid.stat}`}>
-                  <CountUp end={40} suffix="+" />
-                </div>
-                <div className="mt-1 text-[11px] leading-snug text-paper/50 sm:text-xs">Active campaigns</div>
-              </div>
-              <div className="min-w-[122px] shrink-0 snap-start md:min-w-0">
-                <div className={`font-display font-semibold text-paper ${fluid.stat}`}>
-                  <CountUp end={3.2} decimals={1} suffix="×" />
-                </div>
-                <div className="mt-1 text-[11px] leading-snug text-paper/50 sm:text-xs">Avg. lead-to-close lift</div>
-              </div>
-              <div className="min-w-[122px] shrink-0 snap-start md:min-w-0">
-                <div className={`font-display font-semibold text-paper ${fluid.stat}`}>
-                  ₹<CountUp end={2.4} decimals={1} suffix="Cr+" />
-                </div>
-                <div className="mt-1 text-[11px] leading-snug text-paper/50 sm:text-xs">Ad spend managed</div>
-              </div>
-            </div>
-          </Reveal>
-
-          {/* Mobile-only scroll cue */}
-          <div className="mt-8 flex justify-center sm:mt-10 md:hidden">
-            <div className="scroll-hint-dot flex flex-col items-center gap-1">
+          <div className="mt-10 flex md:hidden">
+            <div className="flex flex-col items-center gap-1">
               <span className="font-mono text-[9px] uppercase tracking-wider text-paper/40">Scroll</span>
-              <ChevronDown className="h-3.5 w-3.5 text-teal" strokeWidth={2} />
+              <ChevronDown className="h-3.5 w-3.5 text-signal" strokeWidth={2} />
             </div>
           </div>
         </div>
 
-        <Reveal delay={200}>
-          <div className="mx-auto min-w-0 max-w-[420px] md:max-w-none">
-            <DashboardMockup />
-          </div>
+        {/* gradient orb illustration */}
+        <Reveal delay={200} direction="right">
+          <HeroCarousel />
         </Reveal>
-      </div>
-
-      <div className="mt-10 sm:mt-14 md:mt-20">
-        <PulseLine className="h-16 w-full sm:h-24 md:h-40" />
       </div>
     </section>
   );
 }
 
-// ---------- Industries strip (seamless marquee) ----------
-// Skin & Hair added per client request — represents beauty/wellness clinics,
-// a growing vertical alongside interior design and real estate.
-const industryChips = [
-  { icon: HomeIcon, label: "Interior Design" },
-  { icon: Building2, label: "Real Estate" },
-  { icon: UtensilsCrossed, label: "Hospitality" },
-  { icon: Scissors, label: "Skin & Hair" },
-  { icon: ShoppingCart, label: "E-Commerce" },
+// ---------- Industries strip (wide image-background carousel) ----------
+const industrySlides = [
+  {
+    icon: HomeIcon,
+    title: "Interior Design",
+    subtitle: "Spaces that sell themselves",
+    desc: "Lead capture tuned to renovation timelines and budget signals, not just page likes.",
+    cta: "View live demo",
+    image: "/Interior_Design.png",
+    gradient: "linear-gradient(135deg, #2A2350, #6D3AF2 60%, #3D6FF2)",
+  },
+  {
+    icon: Building2,
+    title: "Real Estate",
+    subtitle: "From click to site visit",
+    desc: "Meta and Google leads routed straight to your sales team, tagged by project and budget.",
+    cta: "Explore results",
+    image: "/Real_Estate.png",
+    gradient: "linear-gradient(135deg, #1E2A4A, #3D6FF2 60%, #22B07D)",
+  },
+  {
+    icon: UtensilsCrossed,
+    title: "Hospitality",
+    subtitle: "Bookings, not just likes",
+    desc: "Campaigns built around table reservations and event enquiries that actually convert.",
+    cta: "See patterns",
+    gradient: "linear-gradient(135deg, #3A1E3A, #FF5C8A 60%, #6D3AF2)",
+  },
+  {
+    icon: Scissors,
+    title: "Skin & Hair Clinics",
+    subtitle: "Bookings + WhatsApp",
+    desc: "Appointment-focused Meta and Google campaigns with WhatsApp follow-up, so enquiries convert to bookings.",
+    cta: "Explore reels",
+    gradient: "linear-gradient(135deg, #3A2A1E, #F2A93A 60%, #FF5C8A)",
+  },
+  {
+    icon: ShoppingCart,
+    title: "E-Commerce & Retail",
+    subtitle: "Performance ads",
+    desc: "Performance ads and SEO built for online sales, tuned against real cart-to-checkout data.",
+    cta: "View live demo",
+    gradient: "linear-gradient(135deg, #1E3A32, #22B07D 60%, #3D6FF2)",
+  },
+  {
+    icon: GraduationCap,
+    title: "Education & Coaching",
+    subtitle: "Enrollment funnels",
+    desc: "Enrollment-focused campaigns and content marketing that fill batches, not just inboxes.",
+    cta: "See funnels",
+    gradient: "linear-gradient(135deg, #1E2A4A, #6D3AF2 60%, #A78BFA)",
+  },
+  {
+    icon: Shirt,
+    title: "Fashion & Lifestyle Brands",
+    subtitle: "Brand + social",
+    desc: "Branding, influencer-style content and social ads built around your visual identity.",
+    cta: "See lookbook",
+    gradient: "linear-gradient(135deg, #3A1E3A, #A78BFA 60%, #FF5C8A)",
+  },
+  {
+    icon: Wrench,
+    title: "Home Services",
+    subtitle: "Local leads",
+    desc: "Local lead generation and Google Business optimization that keeps your calendar full.",
+    cta: "Get local leads",
+    gradient: "linear-gradient(135deg, #2A2A1E, #F2A93A 60%, #22B07D)",
+  },
+  {
+    icon: Car,
+    title: "Automotive",
+    subtitle: "Footfall + bookings",
+    desc: "Showroom footfall and service-booking campaigns backed by local search and social proof.",
+    cta: "See results",
+    gradient: "linear-gradient(135deg, #1E2436, #3D6FF2 60%, #6D3AF2)",
+  },
+  {
+    icon: Plane,
+    title: "Travel & Tourism",
+    subtitle: "Bookings + content",
+    desc: "Destination-focused content, seasonal campaigns and booking-funnel optimization.",
+    cta: "Explore campaigns",
+    gradient: "linear-gradient(135deg, #1E3A46, #3D6FF2 60%, #9ef7d2)",
+  },
+  {
+    icon: PartyPopper,
+    title: "Weddings & Events",
+    subtitle: "Inquiries + portfolio",
+    desc: "Portfolio-led social growth and inquiry funnels built around visual storytelling.",
+    cta: "View portfolio",
+    gradient: "linear-gradient(135deg, #3A1E2E, #FF5C8A 60%, #A78BFA)",
+  },
+  {
+    icon: Briefcase,
+    title: "B2B & SaaS",
+    subtitle: "LinkedIn + content",
+    desc: "LinkedIn strategy, content marketing and lead nurturing funnels for longer sales cycles.",
+    cta: "See strategy",
+    gradient: "linear-gradient(135deg, #1E2436, #3D6FF2 60%, #171833)",
+  },
+  {
+    icon: Dumbbell,
+    title: "Fitness & Wellness",
+    subtitle: "Membership growth",
+    desc: "Membership-driven social campaigns and local SEO that keep classes full.",
+    cta: "Grow membership",
+    gradient: "linear-gradient(135deg, #1E3A2A, #22B07D 60%, #9ef7d2)",
+  },
 ];
 
 function IndustryStrip() {
-  const chips = [...industryChips, ...industryChips];
+  const [active, setActive] = useState(0);
+  const [progress, setProgress] = useState(0);
+  const n = industrySlides.length;
+
+  useEffect(() => {
+    const start = performance.now();
+    const duration = 5000;
+    let raf: number;
+    const tick = (now: number) => {
+      const p = Math.min(1, (now - start) / duration);
+      setProgress(p);
+      if (p < 1) raf = requestAnimationFrame(tick);
+      else setActive((i) => (i + 1) % n);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [active, n]);
+
+  const go = (dir: number) => setActive((i) => (i + dir + n) % n);
 
   return (
-    <section className="relative border-b border-line py-7 sm:py-10">
-      <style>{`
-        @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-        .marquee-track { animation: marquee 26s linear infinite; }
-        .marquee-wrap:hover .marquee-track { animation-play-state: paused; }
-        @media (prefers-reduced-motion: reduce) { .marquee-track { animation: none !important; } }
-      `}</style>
-      <div className="mx-auto max-w-6xl px-5 sm:px-6">
+    <section className="relative overflow-hidden bg-[#0B0B14] py-10 sm:py-14">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <Reveal>
-          <div className="flex flex-col items-center gap-4 md:flex-row md:justify-between md:gap-5">
-            <span className="shrink-0 font-mono text-[10px] uppercase tracking-wider text-paper/40 sm:text-[11px]">
-              Trusted across
-            </span>
-            <div className="marquee-wrap relative w-full min-w-0 overflow-hidden md:w-auto">
-              <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-10 bg-gradient-to-r from-ink to-transparent sm:w-12" aria-hidden="true" />
-              <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-10 bg-gradient-to-l from-ink to-transparent sm:w-12" aria-hidden="true" />
-              <div className="marquee-track flex w-max items-center gap-2.5 sm:gap-3">
-                {chips.map((c, i) => (
-                  <span
-                    key={`${c.label}-${i}`}
-                    className="flex shrink-0 items-center gap-1.5 rounded-full border border-line px-3 py-1.5 text-[11px] text-paper/60 sm:gap-2 sm:px-4 sm:py-2 sm:text-xs"
-                  >
-                    <c.icon className="h-3.5 w-3.5 text-signal" strokeWidth={1.75} />
-                    {c.label}
-                  </span>
-                ))}
-              </div>
-            </div>
-            <Link
-              href="/industries"
-              className="flex shrink-0 items-center gap-1 rounded-full px-3 py-1.5 font-mono text-[10px] uppercase tracking-wider text-teal hover:underline sm:text-[11px]"
-            >
-              +10 more
-              <ArrowUpRight className="h-3 w-3" strokeWidth={2} />
-            </Link>
-          </div>
+          <span className="mb-8 block text-center font-mono text-[10px] uppercase tracking-wider text-white/40 sm:text-[11px]">
+            Trusted across
+          </span>
         </Reveal>
+
+        <div className="relative">
+          <button
+            onClick={() => go(-1)}
+            aria-label="Previous"
+            className="absolute left-0 top-1/2 z-30 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-md transition-colors hover:bg-white/20"
+          >
+            <ChevronLeft className="h-5 w-5" strokeWidth={2} />
+          </button>
+          <button
+            onClick={() => go(1)}
+            aria-label="Next"
+            className="absolute right-0 top-1/2 z-30 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-md transition-colors hover:bg-white/20"
+          >
+            <ArrowRight className="h-5 w-5" strokeWidth={2} />
+          </button>
+
+          <div
+            className="relative mx-auto h-[220px] overflow-hidden sm:h-[260px] md:h-[300px]"
+            style={{ perspective: "1400px" }}
+          >
+            {industrySlides.map((s, i) => {
+              let d = i - active;
+              if (d > n / 2) d -= n;
+              if (d < -n / 2) d += n;
+              const abs = Math.abs(d);
+              const isActive = d === 0;
+
+              const tx = d * 60;
+              const rot = -d * 30;
+              const depth = -abs * 140;
+              const scale = Math.max(1 - abs * 0.1, 0.6);
+              const blur = Math.min(abs * 1.4, 3);
+
+              return (
+                <div
+                  key={s.title}
+                  className="absolute top-1/2 h-full overflow-hidden rounded-[20px] will-change-transform"
+                  style={{
+                    left: "50%",
+                    width: "min(520px, 42vw)",
+                    minWidth: "260px",
+                    transform: `translate3d(calc(-50% + ${tx}%), -50%, ${depth}px) rotateY(${rot}deg) scale(${scale})`,
+                    filter: abs > 0 ? `blur(${blur}px)` : "none",
+                    opacity: abs > 2 ? 0 : 1,
+                    zIndex: 100 - Math.round(abs),
+                    pointerEvents: isActive ? "auto" : "none",
+                    background: s.image ? `url('${s.image}') center/cover no-repeat` : s.gradient,
+                    transition: "transform 800ms cubic-bezier(0.2,0.7,0,1), filter 800ms cubic-bezier(0.2,0.7,0,1)",
+                    boxShadow: isActive
+                      ? "0 30px 70px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.15) inset"
+                      : "0 20px 50px rgba(0,0,0,0.45)",
+                  }}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/45 to-black/25" />
+                  <div className="relative flex h-full flex-col justify-between p-4 sm:p-5">
+                    <div>
+                      <h3 className="font-display text-base font-extrabold text-white sm:text-lg" style={{ textShadow: "2px 2px 15px rgba(0,0,0,0.6)" }}>
+                        {s.title}
+                      </h3>
+                      <p className="mt-0.5 text-[10px] font-semibold uppercase tracking-wider text-[#9ef7d2] sm:text-[11px]">{s.subtitle}</p>
+                    </div>
+                    <div>
+                      <p className="hidden max-w-sm rounded-[10px] bg-black/40 p-2.5 text-[11px] leading-relaxed text-white/85 backdrop-blur-sm sm:block sm:text-[12px]">
+                        {s.desc}
+                      </p>
+                      <button className="mt-2 inline-flex items-center gap-1.5 rounded-[12px] border border-[#9ef7d2]/60 bg-gradient-to-b from-[#9ef7d2] to-[#588874] px-3.5 py-2 text-[10px] font-bold uppercase tracking-wider text-[#0b0e13] shadow-[0_3px_15px_rgba(130,160,255,0.75)] transition-transform active:translate-y-0.5">
+                        {s.cta}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="mt-8 flex items-center justify-center gap-1.5">
+          {industrySlides.map((s, i) => (
+            <button
+              key={s.title}
+              onClick={() => setActive(i)}
+              aria-label={`Show ${s.title}`}
+              className="rounded-full transition-all duration-300"
+              style={{
+                width: active === i ? "16px" : "12px",
+                height: "12px",
+                background: active === i ? "linear-gradient(180deg, #82a0ff, #9ef7d2)" : "rgba(255,255,255,0.25)",
+                transform: active === i ? "scale(1.1)" : "scale(1)",
+              }}
+            />
+          ))}
+        </div>
+
+        <div className="mx-auto mt-4 h-[3px] max-w-xs overflow-hidden rounded-full bg-white/10">
+          <div
+            className="h-full"
+            style={{
+              width: `${progress * 100}%`,
+              background: "linear-gradient(90deg, #9ef7d2, #82a0ff)",
+              transition: progress === 0 ? "none" : "width 100ms linear",
+            }}
+          />
+        </div>
       </div>
     </section>
   );
@@ -699,59 +718,25 @@ function ServiceCard({ s }: { s: (typeof services)[number] }) {
     const y = ((e.clientY - rect.top) / rect.height) * 100;
     el.style.setProperty("--x", `${x}%`);
     el.style.setProperty("--y", `${y}%`);
-    const rx = ((y - 50) / 50) * -3.5;
-    const ry = ((x - 50) / 50) * 3.5;
-    el.style.setProperty("--rx", `${rx}deg`);
-    el.style.setProperty("--ry", `${ry}deg`);
-  };
-
-  const handleLeave = () => {
-    const el = ref.current;
-    if (!el) return;
-    el.style.setProperty("--rx", "0deg");
-    el.style.setProperty("--ry", "0deg");
   };
 
   return (
     <div
       ref={ref}
       onMouseMove={handleMove}
-      onMouseLeave={handleLeave}
-      className={`spotlight-card group relative flex h-full flex-col gap-3 overflow-hidden rounded-2xl border p-4 backdrop-blur-sm transition-[transform,border-color,box-shadow] duration-300 ease-out will-change-transform sm:gap-4 sm:p-5 md:p-6 ${
+      className={`group relative flex h-full flex-col gap-3 overflow-hidden rounded-[22px] p-4 transition-all duration-300 ease-out sm:gap-4 sm:p-5 md:p-6 ${
         s.wide ? "sm:col-span-2" : ""
       } ${
         s.highlighted
-          ? "highlight-card border-transparent bg-ink-panel/60 shadow-2xl"
-          : "border-line bg-ink-panel/40 hover:border-signal/40 hover:shadow-xl"
+          ? "text-white shadow-xl"
+          : "bg-ink-panel shadow-[0_2px_20px_rgba(109,58,242,0.08)] hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(109,58,242,0.16)]"
       }`}
-      style={{ transform: "perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(0)" }}
+      style={s.highlighted ? { background: "linear-gradient(135deg, var(--signal), var(--teal))" } : undefined}
     >
-      <div className="shine-sweep pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100" aria-hidden="true" />
-
-      {s.highlighted && (
+      {!s.highlighted && (
         <div
-          className="pointer-events-none absolute inset-0 -z-10 rounded-2xl"
-          style={{
-            background: "linear-gradient(135deg, var(--signal), var(--teal))",
-            padding: "1.5px",
-            WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
-            WebkitMaskComposite: "xor",
-            maskComposite: "exclude",
-          }}
-          aria-hidden="true"
-        />
-      )}
-
-      <div
-        className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-        style={{ background: "radial-gradient(220px circle at var(--x, 50%) var(--y, 50%), rgba(122,193,66,0.14), transparent 65%)" }}
-        aria-hidden="true"
-      />
-
-      {s.highlighted && (
-        <div
-          className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full opacity-25 blur-2xl"
-          style={{ background: "linear-gradient(135deg, var(--signal), var(--teal))" }}
+          className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+          style={{ background: "radial-gradient(220px circle at var(--x, 50%) var(--y, 50%), rgba(109,58,242,0.08), transparent 65%)" }}
           aria-hidden="true"
         />
       )}
@@ -760,41 +745,38 @@ function ServiceCard({ s }: { s: (typeof services)[number] }) {
         <div
           className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl transition-transform duration-300 ease-out group-hover:scale-110 group-hover:-rotate-6 sm:h-10 sm:w-10"
           style={{
-            background: s.highlighted
-              ? "linear-gradient(135deg, var(--signal), var(--teal))"
-              : "linear-gradient(135deg, rgba(27,84,199,0.15), rgba(122,193,66,0.15))",
+            background: s.highlighted ? "rgba(255,255,255,0.2)" : "linear-gradient(135deg, rgba(109,58,242,0.12), rgba(61,111,242,0.12))",
           }}
         >
           <s.icon className={`h-4 w-4 ${s.highlighted ? "text-white" : "text-signal"}`} strokeWidth={1.75} />
         </div>
 
         <div className="text-right">
-          <div
-            className="bg-clip-text font-mono text-base text-transparent sm:text-lg"
-            style={{ backgroundImage: "linear-gradient(90deg, var(--signal), var(--teal))" }}
-          >
-            {s.metric}
+          <div className={`font-mono text-base sm:text-lg ${s.highlighted ? "text-white" : "text-signal"}`}>{s.metric}</div>
+          <div className={`font-mono text-[8px] uppercase tracking-wider sm:text-[9px] ${s.highlighted ? "text-white/70" : "text-paper/40"}`}>
+            {s.metricLabel}
           </div>
-          <div className="font-mono text-[8px] uppercase tracking-wider text-paper/40 sm:text-[9px]">{s.metricLabel}</div>
         </div>
       </div>
 
       {s.highlighted && (
-        <span className="relative inline-flex w-fit items-center gap-1.5 rounded-full border border-teal/30 bg-teal/10 px-2.5 py-1 font-mono text-[9px] uppercase tracking-wider text-teal">
-          <span className="h-1.5 w-1.5 rounded-full bg-teal blink-dot" />
+        <span className="relative inline-flex w-fit items-center gap-1.5 rounded-full bg-white/15 px-2.5 py-1 font-mono text-[9px] uppercase tracking-wider text-white">
+          <span className="h-1.5 w-1.5 rounded-full bg-white blink-dot" />
           Our guarantee
         </span>
       )}
 
       <div className="relative flex-1">
-        <h3 className="font-display text-[14.5px] font-semibold leading-snug text-paper sm:text-base">{s.title}</h3>
-        <p className="mt-1.5 text-[12px] leading-relaxed text-paper/60 sm:mt-2 sm:text-[13px]">{s.desc}</p>
+        <h3 className={`font-display text-[14.5px] font-bold leading-snug sm:text-base ${s.highlighted ? "text-white" : "text-paper"}`}>{s.title}</h3>
+        <p className={`mt-1.5 text-[12px] leading-relaxed sm:mt-2 sm:text-[13px] ${s.highlighted ? "text-white/85" : "text-paper/60"}`}>{s.desc}</p>
       </div>
 
-      <div className="relative flex items-center justify-between pt-1">
-        <div className="h-px w-0 transition-all duration-300 group-hover:w-10" style={{ background: "linear-gradient(90deg, var(--signal), var(--teal))" }} />
-        <ArrowUpRight className="h-4 w-4 -translate-x-1 text-paper/0 transition-all duration-300 group-hover:translate-x-0 group-hover:text-teal group-hover:opacity-100" strokeWidth={2} style={{ opacity: 0 }} />
-      </div>
+      <ArrowUpRight
+        className={`h-4 w-4 -translate-x-1 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100 ${
+          s.highlighted ? "text-white" : "text-signal"
+        }`}
+        strokeWidth={2}
+      />
     </div>
   );
 }
@@ -802,48 +784,31 @@ function ServiceCard({ s }: { s: (typeof services)[number] }) {
 function Services() {
   return (
     <section id="services" className="relative py-14 sm:py-16 md:py-24">
-      <style>{`
-        @keyframes highlight-pulse {
-          0%, 100% { box-shadow: 0 0 0 0 rgba(122,193,66,0.0), 0 20px 60px -20px rgba(27,84,199,0.35); }
-          50% { box-shadow: 0 0 0 6px rgba(122,193,66,0.06), 0 20px 60px -20px rgba(122,193,66,0.35); }
-        }
-        .highlight-card { animation: highlight-pulse 3.5s ease-in-out infinite; }
-        .spotlight-card { transform-style: preserve-3d; }
-        .shine-sweep {
-          background: linear-gradient(115deg, transparent 20%, rgba(255,255,255,0.06) 35%, rgba(122,193,66,0.10) 45%, transparent 60%);
-          background-size: 250% 250%;
-          background-position: 100% 0%;
-          transition: background-position 0.7s ease;
-        }
-        .group:hover .shine-sweep { background-position: 0% 100%; }
-        @media (prefers-reduced-motion: reduce) {
-          .highlight-card { animation: none !important; }
-          .shine-sweep { transition: none !important; }
-        }
-      `}</style>
       <ChevronDivider className="absolute -top-[11px] left-1/2 -translate-x-1/2" />
       <div className="mx-auto max-w-6xl px-5 sm:px-6">
-        <Reveal>
-          <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+        <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+          <Reveal direction="left">
             <div>
-              <span className={`font-mono uppercase text-teal ${fluid.eyebrow}`}>What we run</span>
-              <h2 className={`mt-2 font-display font-semibold tracking-tight text-paper sm:mt-3 ${fluid.h2}`}>
+              <span className={`font-mono uppercase text-signal ${fluid.eyebrow}`}>What we run</span>
+              <h2 className={`mt-2 font-display font-extrabold tracking-tight text-paper sm:mt-3 ${fluid.h2}`}>
                 Eight systems.
                 <br />
                 One pipeline.
               </h2>
             </div>
+          </Reveal>
+          <Reveal direction="right">
             <p className={`max-w-sm text-paper/60 ${fluid.body}`}>
               We don&apos;t sell services in isolation — each one feeds the
               same CRM, so nothing you pay for disappears into a report
               nobody reads.
             </p>
-          </div>
-        </Reveal>
+          </Reveal>
+        </div>
 
         <div className="mt-8 grid grid-cols-1 gap-3.5 sm:mt-10 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3 md:mt-14 md:gap-5">
           {services.map((s, i) => (
-            <Reveal key={s.title} delay={i * 60}>
+            <Reveal key={s.title} delay={(i % 3) * 90} direction={i % 3 === 0 ? "left" : i % 3 === 1 ? "up" : "right"}>
               <ServiceCard s={s} />
             </Reveal>
           ))}
@@ -882,7 +847,7 @@ function Process() {
       <div className="mx-auto max-w-6xl px-5 sm:px-6">
         <Reveal>
           <div className="max-w-2xl">
-            <h2 className={`font-display font-semibold tracking-tight text-paper ${fluid.h2}`}>How we work</h2>
+            <h2 className={`font-display font-extrabold tracking-tight text-paper ${fluid.h2}`}>How we work</h2>
             <p className={`mt-3 text-paper/60 ${fluid.body}`}>
               No black-box retainers. Four stages, each one handed off with
               data you can check yourself.
@@ -904,13 +869,13 @@ function Process() {
           </div>
           <div className="grid gap-7 sm:grid-cols-2 sm:gap-8 md:grid-cols-4">
             {steps.map((step, i) => (
-              <Reveal key={step.n} delay={i * 90}>
+              <Reveal key={step.n} delay={i * 90} direction={i % 2 === 0 ? "down" : "up"}>
                 <div className="group relative flex gap-4 sm:block sm:gap-0">
-                  <div className="relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-line bg-ink font-mono text-xs text-signal-dim transition-colors group-hover:border-signal/60 group-hover:text-signal">
+                  <div className="relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-line bg-ink-panel font-mono text-xs text-signal-dim shadow-sm transition-colors group-hover:border-signal/60 group-hover:text-signal">
                     {step.n}
                   </div>
                   <div className="sm:mt-4">
-                    <h3 className="font-display text-base font-semibold text-paper sm:text-lg">{step.title}</h3>
+                    <h3 className="font-display text-base font-bold text-paper sm:text-lg">{step.title}</h3>
                     <p className="mt-1.5 text-[13px] leading-relaxed text-paper/60 sm:mt-2 sm:text-sm">{step.desc}</p>
                   </div>
                 </div>
@@ -923,11 +888,7 @@ function Process() {
   );
 }
 
-// ---------- Case Studies — deeper proof section than the old portfolio
-// strip: challenge / approach / outcome, one metric each. NOTE: figures
-// below are illustrative placeholders in the original brand voice — swap
-// in your real numbers per client before this goes live, since these are
-// specific, checkable claims once published.
+// ---------- Case Studies ----------
 const caseStudies = [
   {
     icon: Building2,
@@ -960,7 +921,6 @@ const caseStudies = [
 
 function CaseStudyCard({ c, index }: { c: (typeof caseStudies)[number]; index: number }) {
   const ref = useRef<HTMLDivElement>(null);
-
   const handleMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const el = ref.current;
     if (!el) return;
@@ -975,11 +935,11 @@ function CaseStudyCard({ c, index }: { c: (typeof caseStudies)[number]; index: n
     <div
       ref={ref}
       onMouseMove={handleMove}
-      className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-ink-panel/40 p-5 backdrop-blur-sm transition-colors duration-300 hover:border-teal/40 sm:p-6"
+      className="group relative flex h-full flex-col overflow-hidden rounded-[22px] bg-ink-panel p-5 shadow-[0_2px_20px_rgba(109,58,242,0.08)] transition-shadow duration-300 hover:shadow-[0_12px_30px_rgba(109,58,242,0.15)] sm:p-6"
     >
       <div
         className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-        style={{ background: "radial-gradient(260px circle at var(--x, 50%) var(--y, 50%), rgba(27,84,199,0.12), transparent 65%)" }}
+        style={{ background: "radial-gradient(260px circle at var(--x, 50%) var(--y, 50%), rgba(109,58,242,0.08), transparent 65%)" }}
         aria-hidden="true"
       />
 
@@ -987,7 +947,7 @@ function CaseStudyCard({ c, index }: { c: (typeof caseStudies)[number]; index: n
         <div className="flex items-center gap-2.5">
           <div
             className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl"
-            style={{ background: "linear-gradient(135deg, rgba(27,84,199,0.15), rgba(122,193,66,0.15))" }}
+            style={{ background: "linear-gradient(135deg, rgba(109,58,242,0.12), rgba(61,111,242,0.12))" }}
           >
             <c.icon className="h-4 w-4 text-signal" strokeWidth={1.75} />
           </div>
@@ -1012,15 +972,10 @@ function CaseStudyCard({ c, index }: { c: (typeof caseStudies)[number]; index: n
 
       <div className="relative mt-5 flex items-end justify-between border-t border-line pt-4 sm:mt-6">
         <div>
-          <div
-            className="bg-clip-text font-display text-2xl font-semibold text-transparent sm:text-3xl"
-            style={{ backgroundImage: "linear-gradient(90deg, var(--signal), var(--teal))" }}
-          >
-            {c.result}
-          </div>
+          <div className="font-display text-2xl font-extrabold text-signal sm:text-3xl">{c.result}</div>
           <div className="mt-0.5 text-[11px] leading-snug text-paper/50 sm:text-xs">{c.resultLabel}</div>
         </div>
-        <ArrowUpRight className="h-4 w-4 text-paper/30 transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-teal" strokeWidth={2} />
+        <ArrowUpRight className="h-4 w-4 text-paper/30 transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-signal" strokeWidth={2} />
       </div>
     </div>
   );
@@ -1031,9 +986,9 @@ function CaseStudies() {
     <section id="case-studies" className="relative py-14 sm:py-16 md:py-24">
       <ChevronDivider className="absolute -top-[11px] left-1/2 -translate-x-1/2" />
       <div className="mx-auto max-w-6xl px-5 sm:px-6">
-        <Reveal>
-          <span className={`font-mono uppercase text-teal ${fluid.eyebrow}`}>Proof, not promises</span>
-          <h2 className={`mt-2 max-w-xl font-display font-semibold tracking-tight text-paper sm:mt-3 ${fluid.h2}`}>
+        <Reveal direction="left">
+          <span className={`font-mono uppercase text-signal ${fluid.eyebrow}`}>Proof, not promises</span>
+          <h2 className={`mt-2 max-w-xl font-display font-extrabold tracking-tight text-paper sm:mt-3 ${fluid.h2}`}>
             Three problems we&apos;ve actually solved
           </h2>
           <p className={`mt-3 max-w-xl text-paper/60 ${fluid.body}`}>
@@ -1044,7 +999,7 @@ function CaseStudies() {
 
         <div className="mt-8 grid gap-4 sm:mt-10 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 md:mt-14">
           {caseStudies.map((c, i) => (
-            <Reveal key={c.client} delay={i * 90}>
+            <Reveal key={c.client} delay={i * 90} direction={i % 3 === 0 ? "left" : i % 3 === 1 ? "up" : "right"}>
               <CaseStudyCard c={c} index={i} />
             </Reveal>
           ))}
@@ -1064,12 +1019,12 @@ const whyPoints = [
 
 function WhyChooseTeaser() {
   return (
-    <section className="relative bg-ink-panel/40 py-14 sm:py-16 md:py-24">
+    <section className="relative bg-ink-panel/60 py-14 sm:py-16 md:py-24">
       <ChevronDivider className="absolute -top-[11px] left-1/2 -translate-x-1/2" />
       <div className="mx-auto grid max-w-6xl gap-8 px-5 sm:px-6 md:grid-cols-2 md:items-center md:gap-12">
-        <Reveal>
-          <span className={`font-mono uppercase text-teal ${fluid.eyebrow}`}>Why us</span>
-          <h2 className={`mt-2 font-display font-semibold tracking-tight text-paper sm:mt-3 ${fluid.h2}`}>
+        <Reveal direction="left">
+          <span className={`font-mono uppercase text-signal ${fluid.eyebrow}`}>Why us</span>
+          <h2 className={`mt-2 font-display font-extrabold tracking-tight text-paper sm:mt-3 ${fluid.h2}`}>
             We don&apos;t just run campaigns — we build growth systems.
           </h2>
           <p className={`mt-3 text-paper/60 sm:mt-4 ${fluid.body}`}>
@@ -1083,12 +1038,12 @@ function WhyChooseTeaser() {
           </Link>
         </Reveal>
 
-        <Reveal delay={100}>
+        <Reveal delay={100} direction="right">
           <div className="space-y-2.5 sm:space-y-3">
             {whyPoints.map((p, i) => (
               <div
                 key={p}
-                className="flex items-center gap-3 rounded-xl border border-line bg-ink/80 p-3.5 backdrop-blur-sm transition-transform duration-200 hover:-translate-y-0.5 hover:border-signal/30 sm:p-4"
+                className="flex items-center gap-3 rounded-xl bg-ink-panel p-3.5 shadow-[0_2px_16px_rgba(109,58,242,0.06)] transition-transform duration-200 hover:-translate-y-0.5 sm:p-4"
               >
                 <CheckCircle2 className="h-4 w-4 shrink-0" strokeWidth={2} style={{ color: i % 2 === 0 ? "var(--signal)" : "var(--teal)" }} />
                 <span className="text-[13px] text-paper/70 sm:text-sm">{p}</span>
@@ -1101,7 +1056,7 @@ function WhyChooseTeaser() {
   );
 }
 
-// ---------- Comparison — us vs a typical agency ----------
+// ---------- Comparison ----------
 const comparisonRows: { label: string; typical: string; us: string }[] = [
   { label: "Lead attribution", typical: "Platform dashboards only", us: "Tracked end-to-end in your CRM" },
   { label: "Reporting", typical: "Monthly PDF, after the fact", us: "Live pipeline, checked weekly together" },
@@ -1116,19 +1071,17 @@ function ComparisonSection() {
     <section id="comparison" className="relative py-14 sm:py-16 md:py-24">
       <ChevronDivider className="absolute -top-[11px] left-1/2 -translate-x-1/2" />
       <div className="mx-auto max-w-6xl px-5 sm:px-6">
-        <Reveal>
-          <span className={`font-mono uppercase text-teal ${fluid.eyebrow}`}>The difference, side by side</span>
-          <h2 className={`mt-2 max-w-xl font-display font-semibold tracking-tight text-paper sm:mt-3 ${fluid.h2}`}>
+        <Reveal direction="left">
+          <span className={`font-mono uppercase text-signal ${fluid.eyebrow}`}>The difference, side by side</span>
+          <h2 className={`mt-2 max-w-xl font-display font-extrabold tracking-tight text-paper sm:mt-3 ${fluid.h2}`}>
             What changes when your ad spend has a pipeline behind it
           </h2>
         </Reveal>
 
-        {/* MOBILE (< sm): stacked "vs" cards, no horizontal scroll needed at all.
-            DESKTOP (>= sm): original 3-column table. */}
         <Reveal delay={80}>
           <div className="mt-8 space-y-3 sm:hidden">
             {comparisonRows.map((row) => (
-              <div key={row.label} className="rounded-xl border border-line bg-ink-panel/30 p-4">
+              <div key={row.label} className="rounded-xl bg-ink-panel p-4 shadow-[0_2px_16px_rgba(109,58,242,0.06)]">
                 <div className="text-[13px] font-semibold text-paper">{row.label}</div>
                 <div className="mt-3 grid grid-cols-2 gap-3">
                   <div className="flex items-start gap-1.5 min-w-0">
@@ -1137,9 +1090,9 @@ function ComparisonSection() {
                   </div>
                   <div
                     className="flex min-w-0 items-start gap-1.5 rounded-lg p-2 -m-2"
-                    style={{ background: "linear-gradient(180deg, rgba(27,84,199,0.08), rgba(122,193,66,0.05))" }}
+                    style={{ background: "linear-gradient(180deg, rgba(109,58,242,0.08), rgba(61,111,242,0.05))" }}
                   >
-                    <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-teal" strokeWidth={2.5} />
+                    <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-signal" strokeWidth={2.5} />
                     <span className="text-[12px] leading-snug text-paper">{row.us}</span>
                   </div>
                 </div>
@@ -1147,29 +1100,29 @@ function ComparisonSection() {
             ))}
           </div>
 
-          <div className="mt-12 hidden overflow-hidden rounded-2xl border border-line sm:block">
-            <div className="grid grid-cols-[1.1fr_1fr_1fr] bg-ink-panel/60 backdrop-blur-sm">
+          <div className="mt-12 hidden overflow-hidden rounded-[22px] bg-ink-panel shadow-[0_2px_20px_rgba(109,58,242,0.08)] sm:block">
+            <div className="grid grid-cols-[1.1fr_1fr_1fr] border-b border-line">
               <div className="p-5 font-mono text-[11px] uppercase tracking-wider text-paper/40">&nbsp;</div>
               <div className="border-l border-line p-5">
                 <span className="font-mono text-[11px] uppercase tracking-wider text-paper/40">Typical agency</span>
               </div>
               <div
                 className="relative border-l border-line p-5"
-                style={{ background: "linear-gradient(180deg, rgba(27,84,199,0.10), rgba(122,193,66,0.06))" }}
+                style={{ background: "linear-gradient(180deg, rgba(109,58,242,0.08), rgba(61,111,242,0.05))" }}
               >
-                <span className="font-mono text-[11px] uppercase tracking-wider text-teal">GK Digital Solutions</span>
+                <span className="font-mono text-[11px] uppercase tracking-wider text-signal">GK Digital Solutions</span>
               </div>
             </div>
 
             {comparisonRows.map((row, i) => (
-              <div key={row.label} className={`grid grid-cols-[1.1fr_1fr_1fr] ${i % 2 === 0 ? "bg-ink" : "bg-ink-panel/20"}`}>
+              <div key={row.label} className={`grid grid-cols-[1.1fr_1fr_1fr] ${i % 2 === 0 ? "bg-ink-panel" : "bg-ink"}`}>
                 <div className="flex items-center p-5 text-sm font-medium text-paper/80">{row.label}</div>
                 <div className="flex items-center gap-2 border-l border-line p-5 text-sm text-paper/50">
                   <X className="h-3.5 w-3.5 shrink-0 text-paper/30" strokeWidth={2} />
                   {row.typical}
                 </div>
                 <div className="flex items-center gap-2 border-l border-line p-5 text-sm text-paper">
-                  <Check className="h-3.5 w-3.5 shrink-0 text-teal" strokeWidth={2.5} />
+                  <Check className="h-3.5 w-3.5 shrink-0 text-signal" strokeWidth={2.5} />
                   {row.us}
                 </div>
               </div>
@@ -1191,20 +1144,20 @@ const trustPoints = [
 
 function TrustStrip() {
   return (
-    <section className="relative border-y border-line bg-ink-panel/30 py-10 sm:py-16">
+    <section className="relative bg-ink-panel/60 py-10 sm:py-16">
       <div className="mx-auto max-w-6xl px-5 sm:px-6">
         <div className="grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-2 sm:gap-8 lg:grid-cols-4">
           {trustPoints.map((t, i) => (
-            <Reveal key={t.title} delay={i * 70}>
+            <Reveal key={t.title} delay={i * 70} direction={i % 2 === 0 ? "up" : "down"}>
               <div className="flex min-w-0 gap-2.5 sm:gap-3">
                 <div
                   className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg sm:h-9 sm:w-9"
-                  style={{ background: "linear-gradient(135deg, rgba(27,84,199,0.15), rgba(122,193,66,0.15))" }}
+                  style={{ background: "linear-gradient(135deg, rgba(109,58,242,0.12), rgba(61,111,242,0.12))" }}
                 >
                   <t.icon className="h-3.5 w-3.5 text-signal sm:h-4 sm:w-4" strokeWidth={1.75} />
                 </div>
                 <div className="min-w-0">
-                  <h3 className="font-display text-[12.5px] font-semibold leading-snug text-paper sm:text-sm">{t.title}</h3>
+                  <h3 className="font-display text-[12.5px] font-bold leading-snug text-paper sm:text-sm">{t.title}</h3>
                   <p className="mt-1 hidden text-xs leading-relaxed text-paper/55 sm:block">{t.desc}</p>
                 </div>
               </div>
@@ -1230,28 +1183,21 @@ function Results() {
       <ChevronDivider className="absolute -top-[11px] left-1/2 -translate-x-1/2" />
       <div className="mx-auto max-w-6xl px-5 sm:px-6">
         <Reveal>
-          <div className={`flex items-center gap-2 font-mono uppercase text-teal ${fluid.eyebrow}`}>
-            <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-teal blink-dot" />
+          <div className={`flex items-center gap-2 font-mono uppercase text-signal ${fluid.eyebrow}`}>
+            <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-signal blink-dot" />
             <span>Numbers, not testimonials</span>
           </div>
-          <h2 className={`mt-3 max-w-xl font-display font-semibold tracking-tight text-paper sm:mt-4 ${fluid.h2}`}>
+          <h2 className={`mt-3 max-w-xl font-display font-extrabold tracking-tight text-paper sm:mt-4 ${fluid.h2}`}>
             What&apos;s actually in the pipeline right now
           </h2>
         </Reveal>
 
-        <div className="mt-8 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-line bg-line lg:grid-cols-4 sm:mt-14">
+        <div className="mt-8 grid grid-cols-2 gap-4 lg:grid-cols-4 sm:mt-14">
           {resultStats.map((s, i) => (
-            <Reveal key={s.label} delay={i * 70}>
-              <div className="group relative h-full min-w-0 bg-ink-panel/30 p-4 backdrop-blur-sm transition-colors hover:bg-ink-panel sm:p-8">
-                <TrendingUp
-                  className="h-3.5 w-3.5 transition-colors sm:h-4 sm:w-4"
-                  strokeWidth={1.75}
-                  style={{ color: i % 2 === 0 ? "var(--signal)" : "var(--teal)", opacity: 0.5 }}
-                />
-                <div
-                  className={`mt-2.5 bg-clip-text font-mono text-transparent sm:mt-4 ${fluid.bigStat}`}
-                  style={{ backgroundImage: "linear-gradient(90deg, var(--signal), var(--teal))" }}
-                >
+            <Reveal key={s.label} delay={i * 70} direction={i % 2 === 0 ? "up" : "down"}>
+              <div className="group relative h-full min-w-0 rounded-[20px] bg-ink-panel p-4 shadow-[0_2px_20px_rgba(109,58,242,0.08)] transition-shadow hover:shadow-[0_12px_30px_rgba(109,58,242,0.15)] sm:p-8">
+                <TrendingUp className="h-3.5 w-3.5 sm:h-4 sm:w-4" strokeWidth={1.75} style={{ color: i % 2 === 0 ? "var(--signal)" : "var(--teal)" }} />
+                <div className={`mt-2.5 font-display font-extrabold text-paper sm:mt-4 ${fluid.bigStat}`}>
                   <CountUp end={s.end} decimals={s.decimals ?? 0} prefix={s.prefix ?? ""} suffix={s.suffix} />
                 </div>
                 <div className="mt-2 text-[12px] leading-snug text-paper/60 sm:mt-3 sm:text-sm">{s.label}</div>
@@ -1271,8 +1217,6 @@ function Results() {
 }
 
 // ---------- Portfolio teaser ----------
-// Added a Skin & Hair example alongside the existing three, so the
-// portfolio strip reflects the new industry vertical.
 const portfolioTeasers = [
   { tag: "Local SEO & Lead Generation", title: "Real Estate Brand" },
   { tag: "Google Ads & Meta Ads ROI", title: "E-Commerce Store" },
@@ -1287,7 +1231,7 @@ function PortfolioTeaser() {
       <div className="mx-auto max-w-6xl px-5 sm:px-6">
         <Reveal>
           <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-            <h2 className={`font-display font-semibold tracking-tight text-paper ${fluid.h2}`}>Real work. Real growth.</h2>
+            <h2 className={`font-display font-extrabold tracking-tight text-paper ${fluid.h2}`}>Real work. Real growth.</h2>
             <Link href="/portfolio" className="flex items-center gap-1 font-mono text-[11px] uppercase tracking-wider text-teal hover:underline sm:text-[12px]">
               View full portfolio
               <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={2} />
@@ -1297,14 +1241,14 @@ function PortfolioTeaser() {
 
         <div className="mt-7 grid gap-4 sm:mt-10 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
           {portfolioTeasers.map((p, i) => (
-            <Reveal key={p.title} delay={i * 80}>
+            <Reveal key={p.title} delay={i * 80} direction={i % 2 === 0 ? "left" : "right"}>
               <Link
                 href="/portfolio"
-                className="group block h-full rounded-2xl border border-dashed border-line bg-ink-panel/30 p-5 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-signal/40 hover:bg-ink-panel/60 sm:p-6"
+                className="group block h-full rounded-[22px] border border-dashed border-line bg-ink-panel/60 p-5 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-signal/40 hover:bg-ink-panel sm:p-6"
               >
                 <span className="font-mono text-[9px] uppercase tracking-wider text-paper/40 sm:text-[10px]">{p.tag}</span>
-                <h3 className="mt-2.5 font-display text-base font-semibold text-paper sm:mt-3 sm:text-lg">{p.title}</h3>
-                <ArrowUpRight className="mt-3 h-4 w-4 text-paper/30 transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-teal sm:mt-4" strokeWidth={2} />
+                <h3 className="mt-2.5 font-display text-base font-bold text-paper sm:mt-3 sm:text-lg">{p.title}</h3>
+                <ArrowUpRight className="mt-3 h-4 w-4 text-paper/30 transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-signal sm:mt-4" strokeWidth={2} />
               </Link>
             </Reveal>
           ))}
@@ -1314,9 +1258,7 @@ function PortfolioTeaser() {
   );
 }
 
-// ---------- Engagement models — replaces a hard pricing table (real
-// numbers should come from Ganesh directly) with three honest ways of
-// working together, matched to where a client is starting from.
+// ---------- Engagement models ----------
 const engagementModels = [
   {
     icon: Compass,
@@ -1344,12 +1286,12 @@ const engagementModels = [
 
 function EngagementModels() {
   return (
-    <section id="engagement" className="relative bg-ink-panel/40 py-14 sm:py-16 md:py-24">
+    <section id="engagement" className="relative bg-ink-panel/60 py-14 sm:py-16 md:py-24">
       <ChevronDivider className="absolute -top-[11px] left-1/2 -translate-x-1/2" />
       <div className="mx-auto max-w-6xl px-5 sm:px-6">
         <Reveal>
-          <span className={`font-mono uppercase text-teal ${fluid.eyebrow}`}>Ways to work together</span>
-          <h2 className={`mt-2 max-w-xl font-display font-semibold tracking-tight text-paper sm:mt-3 ${fluid.h2}`}>
+          <span className={`font-mono uppercase text-signal ${fluid.eyebrow}`}>Ways to work together</span>
+          <h2 className={`mt-2 max-w-xl font-display font-extrabold tracking-tight text-paper sm:mt-3 ${fluid.h2}`}>
             Pick the model that matches where you are
           </h2>
           <p className={`mt-3 max-w-xl text-paper/60 ${fluid.body}`}>
@@ -1360,44 +1302,30 @@ function EngagementModels() {
 
         <div className="mt-8 grid gap-4 sm:mt-10 sm:grid-cols-3 sm:gap-5 md:mt-14">
           {engagementModels.map((m, i) => (
-            <Reveal key={m.title} delay={i * 90}>
+            <Reveal key={m.title} delay={i * 90} direction={i === 0 ? "left" : i === 1 ? "up" : "right"}>
               <div
-                className={`relative flex h-full flex-col rounded-2xl border p-5 backdrop-blur-sm sm:p-6 ${
-                  m.featured ? "border-transparent bg-ink shadow-2xl" : "border-line bg-ink/60"
+                className={`relative flex h-full flex-col rounded-[22px] p-5 sm:p-6 ${
+                  m.featured ? "text-white shadow-2xl" : "bg-ink-panel shadow-[0_2px_20px_rgba(109,58,242,0.08)]"
                 }`}
+                style={m.featured ? { background: "linear-gradient(135deg, var(--signal), var(--teal))" } : undefined}
               >
-                {m.featured && (
-                  <div
-                    className="pointer-events-none absolute inset-0 -z-10 rounded-2xl"
-                    style={{
-                      background: "linear-gradient(135deg, var(--signal), var(--teal))",
-                      padding: "1.5px",
-                      WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
-                      WebkitMaskComposite: "xor",
-                      maskComposite: "exclude",
-                    }}
-                    aria-hidden="true"
-                  />
-                )}
                 <div
                   className="flex h-9 w-9 items-center justify-center rounded-xl"
                   style={{
-                    background: m.featured
-                      ? "linear-gradient(135deg, var(--signal), var(--teal))"
-                      : "linear-gradient(135deg, rgba(27,84,199,0.15), rgba(122,193,66,0.15))",
+                    background: m.featured ? "rgba(255,255,255,0.2)" : "linear-gradient(135deg, rgba(109,58,242,0.12), rgba(61,111,242,0.12))",
                   }}
                 >
                   <m.icon className={`h-4 w-4 ${m.featured ? "text-white" : "text-signal"}`} strokeWidth={1.75} />
                 </div>
 
-                <h3 className="mt-4 font-display text-lg font-semibold text-paper">{m.title}</h3>
-                <span className="mt-0.5 font-mono text-[10px] uppercase tracking-wider text-teal">{m.tagline}</span>
-                <p className="mt-3 flex-1 text-[13px] leading-relaxed text-paper/60">{m.desc}</p>
+                <h3 className={`mt-4 font-display text-lg font-bold ${m.featured ? "text-white" : "text-paper"}`}>{m.title}</h3>
+                <span className={`mt-0.5 font-mono text-[10px] uppercase tracking-wider ${m.featured ? "text-white/80" : "text-teal"}`}>{m.tagline}</span>
+                <p className={`mt-3 flex-1 text-[13px] leading-relaxed ${m.featured ? "text-white/85" : "text-paper/60"}`}>{m.desc}</p>
 
-                <ul className="mt-4 space-y-2 border-t border-line pt-4">
+                <ul className={`mt-4 space-y-2 border-t pt-4 ${m.featured ? "border-white/20" : "border-line"}`}>
                   {m.bullets.map((b) => (
-                    <li key={b} className="flex items-start gap-2 text-[12.5px] text-paper/70">
-                      <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-teal" strokeWidth={2.5} />
+                    <li key={b} className={`flex items-start gap-2 text-[12.5px] ${m.featured ? "text-white/90" : "text-paper/70"}`}>
+                      <Check className={`mt-0.5 h-3.5 w-3.5 shrink-0 ${m.featured ? "text-white" : "text-signal"}`} strokeWidth={2.5} />
                       {b}
                     </li>
                   ))}
@@ -1406,9 +1334,8 @@ function EngagementModels() {
                 <Link
                   href="/contact"
                   className={`mt-5 flex items-center justify-center gap-1.5 rounded-full py-2.5 font-mono text-[11px] uppercase tracking-wider transition-transform hover:scale-[1.02] ${
-                    m.featured ? "text-white" : "border border-line text-paper/80"
+                    m.featured ? "bg-white text-signal" : "bg-ink text-paper/80"
                   }`}
-                  style={m.featured ? { background: "linear-gradient(90deg, var(--signal), var(--teal))" } : undefined}
                 >
                   Talk to us
                   <ArrowRight className="h-3.5 w-3.5" strokeWidth={2} />
@@ -1422,9 +1349,7 @@ function EngagementModels() {
   );
 }
 
-// ---------- Testimonial carousel — rotates through a few short quotes
-// instead of a single static one, with auto-advance plus manual controls
-// for a genuinely interactive premium touch.
+// ---------- Testimonial carousel ----------
 const testimonials = [
   {
     quote:
@@ -1445,102 +1370,98 @@ const testimonials = [
 
 function TestimonialTeaser() {
   const [index, setIndex] = useState(0);
-
   useEffect(() => {
     const id = setInterval(() => setIndex((i) => (i + 1) % testimonials.length), 6000);
     return () => clearInterval(id);
   }, []);
-
   const active = testimonials[index];
 
   return (
-    <section className="relative bg-ink-panel/40 py-14 sm:py-20">
+    <section className="relative py-14 sm:py-20">
       <ChevronDivider className="absolute -top-[11px] left-1/2 -translate-x-1/2" />
-      <div className="mx-auto max-w-4xl px-5 text-center sm:px-6">
+      <div className="mx-auto max-w-3xl px-5 text-center sm:px-6">
         <Reveal>
-          <Quote className="mx-auto h-6 w-6 text-signal/40" strokeWidth={1.5} />
-          <div className="mt-3 flex justify-center gap-1">
-            {[...Array(5)].map((_, i) => (
-              <Star key={i} className="h-3.5 w-3.5 sm:h-4 sm:w-4" strokeWidth={0} style={{ fill: i % 2 === 0 ? "var(--signal)" : "var(--teal)" }} />
-            ))}
-          </div>
-
-          <div className="relative mt-4 min-h-[110px] sm:mt-5 sm:min-h-[90px]">
-            <p key={index} className={`fade-in-quote font-display leading-relaxed text-paper ${fluid.h2}`}>
-              &ldquo;{active.quote}&rdquo;
-            </p>
-          </div>
-          <style>{`
-            @keyframes fade-in-quote { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-            .fade-in-quote { animation: fade-in-quote 0.5s ease-out; }
-            @media (prefers-reduced-motion: reduce) { .fade-in-quote { animation: none !important; } }
-          `}</style>
-
-          <p className="mt-3 font-mono text-[11px] uppercase tracking-wider text-paper/40 sm:mt-4 sm:text-[12px]">
-            — {active.attribution}
-          </p>
-
-          <div className="mt-5 flex items-center justify-center gap-4 sm:mt-6">
-            <button
-              onClick={() => setIndex((i) => (i - 1 + testimonials.length) % testimonials.length)}
-              aria-label="Previous testimonial"
-              className="flex h-8 w-8 items-center justify-center rounded-full border border-line text-paper/50 transition-colors hover:border-signal/50 hover:text-signal"
-            >
-              <ChevronLeft className="h-4 w-4" strokeWidth={2} />
-            </button>
-            <div className="flex items-center gap-1.5">
-              {testimonials.map((t, i) => (
-                <button
-                  key={t.attribution}
-                  onClick={() => setIndex(i)}
-                  aria-label={`Show testimonial ${i + 1}`}
-                  className="h-1.5 rounded-full transition-all duration-300"
-                  style={{
-                    width: i === index ? "20px" : "6px",
-                    background: i === index ? "var(--teal)" : "var(--line)",
-                  }}
-                />
+          <div className="rounded-[28px] bg-ink-panel p-8 shadow-[0_4px_30px_rgba(109,58,242,0.1)] sm:p-10">
+            <Quote className="mx-auto h-6 w-6 text-signal/40" strokeWidth={1.5} />
+            <div className="mt-3 flex justify-center gap-1">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} className="h-3.5 w-3.5 sm:h-4 sm:w-4" strokeWidth={0} style={{ fill: i % 2 === 0 ? "var(--signal)" : "#F2A93A" }} />
               ))}
             </div>
-            <button
-              onClick={() => setIndex((i) => (i + 1) % testimonials.length)}
-              aria-label="Next testimonial"
-              className="flex h-8 w-8 items-center justify-center rounded-full border border-line text-paper/50 transition-colors hover:border-signal/50 hover:text-signal"
-            >
-              <ArrowRight className="h-4 w-4" strokeWidth={2} />
-            </button>
-          </div>
 
-          <Link href="/testimonials" className="mt-6 inline-flex items-center gap-1 font-mono text-[11px] uppercase tracking-wider text-signal hover:underline sm:mt-7 sm:text-[12px]">
-            Read more stories
-            <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={2} />
-          </Link>
+            <div className="relative mt-4 min-h-[110px] sm:mt-5 sm:min-h-[90px]">
+              <p key={index} className={`fade-in-quote font-display font-semibold leading-relaxed text-paper ${fluid.h2}`}>
+                &ldquo;{active.quote}&rdquo;
+              </p>
+            </div>
+            <style>{`
+              @keyframes fade-in-quote { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+              .fade-in-quote { animation: fade-in-quote 0.5s ease-out; }
+              @media (prefers-reduced-motion: reduce) { .fade-in-quote { animation: none !important; } }
+            `}</style>
+
+            <p className="mt-3 font-mono text-[11px] uppercase tracking-wider text-paper/40 sm:mt-4 sm:text-[12px]">
+              — {active.attribution}
+            </p>
+
+            <div className="mt-5 flex items-center justify-center gap-4 sm:mt-6">
+              <button
+                onClick={() => setIndex((i) => (i - 1 + testimonials.length) % testimonials.length)}
+                aria-label="Previous testimonial"
+                className="flex h-8 w-8 items-center justify-center rounded-full border border-line text-paper/50 transition-colors hover:border-signal/50 hover:text-signal"
+              >
+                <ChevronLeft className="h-4 w-4" strokeWidth={2} />
+              </button>
+              <div className="flex items-center gap-1.5">
+                {testimonials.map((t, i) => (
+                  <button
+                    key={t.attribution}
+                    onClick={() => setIndex(i)}
+                    aria-label={`Show testimonial ${i + 1}`}
+                    className="h-1.5 rounded-full transition-all duration-300"
+                    style={{ width: i === index ? "20px" : "6px", background: i === index ? "var(--signal)" : "var(--line)" }}
+                  />
+                ))}
+              </div>
+              <button
+                onClick={() => setIndex((i) => (i + 1) % testimonials.length)}
+                aria-label="Next testimonial"
+                className="flex h-8 w-8 items-center justify-center rounded-full border border-line text-paper/50 transition-colors hover:border-signal/50 hover:text-signal"
+              >
+                <ArrowRight className="h-4 w-4" strokeWidth={2} />
+              </button>
+            </div>
+
+            <Link href="/testimonials" className="mt-6 inline-flex items-center gap-1 font-mono text-[11px] uppercase tracking-wider text-signal hover:underline sm:mt-7 sm:text-[12px]">
+              Read more stories
+              <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={2} />
+            </Link>
+          </div>
         </Reveal>
       </div>
     </section>
   );
 }
 
-// ---------- Founder strip — GK Digital Solutions is strategist-led, not a
-// faceless account-exec pool. Uses initials rather than a stock photo so
-// nothing breaks if a real headshot isn't wired up yet; swap the initials
-// block for an <Image> once you have a photo you're happy publishing.
+// ---------- Founder strip ----------
 function FounderStrip() {
   return (
     <section className="relative py-14 sm:py-16 md:py-24">
       <ChevronDivider className="absolute -top-[11px] left-1/2 -translate-x-1/2" />
       <div className="mx-auto max-w-4xl px-5 sm:px-6">
-        <Reveal>
-          <div className="flex flex-col items-center gap-6 rounded-2xl border border-line bg-ink-panel/30 p-6 text-center backdrop-blur-sm sm:p-10 md:flex-row md:gap-8 md:text-left">
+        <div className="flex flex-col items-center gap-6 rounded-[24px] bg-ink-panel p-6 text-center shadow-[0_2px_20px_rgba(109,58,242,0.08)] sm:p-10 md:flex-row md:gap-8 md:text-left">
+          <Reveal direction="left">
             <div
-              className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl font-display text-xl font-semibold text-white shadow-lg sm:h-20 sm:w-20 sm:text-2xl"
+              className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl font-display text-xl font-extrabold text-white shadow-lg sm:h-20 sm:w-20 sm:text-2xl"
               style={{ background: "linear-gradient(135deg, var(--signal), var(--teal))" }}
             >
               GK
             </div>
+          </Reveal>
+          <Reveal delay={100} direction="right">
             <div>
-              <span className={`font-mono uppercase text-teal ${fluid.eyebrow}`}>Who you&apos;re working with</span>
-              <h2 className={`mt-2 font-display font-semibold tracking-tight text-paper ${fluid.h3}`}>
+              <span className={`font-mono uppercase text-signal ${fluid.eyebrow}`}>Who you&apos;re working with</span>
+              <h2 className={`mt-2 font-display font-extrabold tracking-tight text-paper ${fluid.h3}`}>
                 Founder-led, not agency-by-committee
               </h2>
               <p className={`mt-2 max-w-xl text-paper/60 ${fluid.body}`}>
@@ -1550,16 +1471,14 @@ function FounderStrip() {
                 just what performs in a slide deck.
               </p>
             </div>
-          </div>
-        </Reveal>
+          </Reveal>
+        </div>
       </div>
     </section>
   );
 }
 
 // ---------- FAQ ----------
-// Added a Skin & Hair specific question so prospective clinic clients see
-// their category addressed directly, alongside the existing questions.
 const faqs = [
   { q: "What's the minimum ad spend to work with you?", a: "Most Hyderabad clients start between ₹30,000–₹60,000/month in ad spend across Meta and Google. We'll tell you upfront in the audit if your budget is too thin to get a reliable read." },
   { q: "How long is the contract?", a: "Month-to-month. We don't hold clients in with a 12-month term — if the pipeline numbers aren't moving, you can walk away with 30 days' notice." },
@@ -1574,12 +1493,12 @@ function FAQItem({ q, a, isOpen, onToggle }: { q: string; a: string; isOpen: boo
   return (
     <div className="border-b border-line">
       <button onClick={onToggle} className="flex min-h-[52px] w-full items-center justify-between gap-4 py-4 text-left sm:py-6" aria-expanded={isOpen}>
-        <span className="font-display text-[14.5px] font-medium text-paper sm:text-base md:text-lg">{q}</span>
+        <span className="font-display text-[14.5px] font-semibold text-paper sm:text-base md:text-lg">{q}</span>
         <span
           className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-line transition-colors sm:h-7 sm:w-7"
-          style={isOpen ? { borderColor: "var(--teal)" } : undefined}
+          style={isOpen ? { borderColor: "var(--signal)" } : undefined}
         >
-          {isOpen ? <Minus className="h-3.5 w-3.5 text-teal" strokeWidth={2} /> : <Plus className="h-3.5 w-3.5 text-paper/50" strokeWidth={2} />}
+          {isOpen ? <Minus className="h-3.5 w-3.5 text-signal" strokeWidth={2} /> : <Plus className="h-3.5 w-3.5 text-paper/50" strokeWidth={2} />}
         </span>
       </button>
       <div className="grid overflow-hidden transition-all duration-300 ease-out" style={{ gridTemplateRows: isOpen ? "1fr" : "0fr" }}>
@@ -1593,14 +1512,13 @@ function FAQItem({ q, a, isOpen, onToggle }: { q: string; a: string; isOpen: boo
 
 function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
-
   return (
     <section id="faq" className="relative py-14 sm:py-16 md:py-24">
       <ChevronDivider className="absolute -top-[11px] left-1/2 -translate-x-1/2" />
       <div className="mx-auto max-w-4xl px-5 sm:px-6">
-        <Reveal>
-          <span className={`font-mono uppercase text-teal ${fluid.eyebrow}`}>Questions</span>
-          <h2 className={`mt-2 font-display font-semibold tracking-tight text-paper sm:mt-3 ${fluid.h2}`}>Before you book the audit</h2>
+        <Reveal direction="left">
+          <span className={`font-mono uppercase text-signal ${fluid.eyebrow}`}>Questions</span>
+          <h2 className={`mt-2 font-display font-extrabold tracking-tight text-paper sm:mt-3 ${fluid.h2}`}>Before you book the audit</h2>
         </Reveal>
 
         <Reveal delay={80}>
@@ -1629,8 +1547,6 @@ function CTA() {
     <section id="contact" className="relative py-16 sm:py-20 md:py-28">
       <ChevronDivider className="absolute -top-[11px] left-1/2 -translate-x-1/2" />
       <style>{`
-        @keyframes border-glow { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
-        .cta-border-glow { animation: border-glow 4s ease-in-out infinite; }
         @keyframes shimmer-sweep {
           0% { transform: translateX(-120%) skewX(-15deg); }
           100% { transform: translateX(220%) skewX(-15deg); }
@@ -1640,41 +1556,34 @@ function CTA() {
           position: absolute;
           top: 0; left: 0;
           width: 30%; height: 100%;
-          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
           animation: shimmer-sweep 3.2s ease-in-out infinite;
         }
         @media (prefers-reduced-motion: reduce) {
-          .cta-border-glow, .shimmer-btn::after { animation: none !important; }
+          .shimmer-btn::after { animation: none !important; }
         }
       `}</style>
       <div className="mx-auto max-w-6xl px-5 sm:px-6">
-        <Reveal>
-          <div
-            className="cta-border-glow relative overflow-hidden rounded-2xl border p-5 backdrop-blur-sm sm:p-10 md:p-14"
-            style={{ borderImage: "linear-gradient(135deg, var(--signal), var(--teal)) 1", background: "var(--ink-panel)" }}
-          >
-            <div
-              className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full opacity-20 blur-3xl"
-              style={{ background: "linear-gradient(135deg, var(--signal), var(--teal))" }}
-              aria-hidden="true"
-            />
-            <div className="pointer-events-none absolute -bottom-24 -left-24 h-64 w-64 rounded-full opacity-10 blur-3xl" style={{ background: "var(--teal)" }} aria-hidden="true" />
+        <div
+          className="relative overflow-hidden rounded-[28px] p-5 text-white shadow-2xl sm:p-10 md:p-14"
+          style={{ background: "linear-gradient(135deg, var(--signal), var(--teal))" }}
+        >
+          <div className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-white/10 blur-3xl" aria-hidden="true" />
+          <div className="pointer-events-none absolute -bottom-24 -left-24 h-64 w-64 rounded-full bg-[#FF5C8A]/25 blur-3xl" aria-hidden="true" />
 
-            <div className="relative flex flex-col items-start justify-between gap-7 md:flex-row md:items-end md:gap-10">
+          <div className="relative flex flex-col items-start justify-between gap-7 md:flex-row md:items-end md:gap-10">
+            <Reveal direction="left">
               <div className="max-w-lg min-w-0">
-                <span
-                  className="inline-flex items-center gap-2 rounded-full px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-white sm:text-[11px]"
-                  style={{ background: "linear-gradient(90deg, var(--signal), var(--teal))" }}
-                >
+                <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 font-mono text-[10px] uppercase tracking-wider sm:text-[11px]">
                   <Sparkles className="h-3 w-3" strokeWidth={2} />
                   Free 15-min audit
                 </span>
 
-                <h2 className={`mt-4 font-display font-semibold tracking-tight text-paper sm:mt-5 ${fluid.h2}`}>
+                <h2 className={`mt-4 font-display font-extrabold tracking-tight sm:mt-5 ${fluid.h2}`}>
                   Let&apos;s see where your budget is actually going.
                 </h2>
 
-                <p className={`mt-3 text-paper/60 sm:mt-4 ${fluid.body}`}>
+                <p className={`mt-3 text-white/85 sm:mt-4 ${fluid.body}`}>
                   Send us your last month of ad spend and lead numbers.
                   We&apos;ll map it against your close rate and tell you,
                   free, whether the problem is targeting, follow-up, or
@@ -1686,46 +1595,44 @@ function CTA() {
                     {avatarInitials.map((initials, i) => (
                       <div
                         key={initials}
-                        className="flex h-7 w-7 items-center justify-center rounded-full border-2 border-ink-panel text-[9px] font-semibold text-white sm:h-8 sm:w-8 sm:text-[10px]"
-                        style={{
-                          background: i % 2 === 0 ? "linear-gradient(135deg, var(--signal), var(--teal))" : "linear-gradient(135deg, var(--teal), var(--signal))",
-                        }}
+                        className="flex h-7 w-7 items-center justify-center rounded-full border-2 border-white/40 bg-white/20 text-[9px] font-semibold sm:h-8 sm:w-8 sm:text-[10px]"
                       >
                         {initials}
                       </div>
                     ))}
                   </div>
-                  <span className="text-[11px] text-paper/50 sm:text-xs">Joined by 18+ Hyderabad brands this year</span>
+                  <span className="text-[11px] text-white/75 sm:text-xs">Joined by 18+ Hyderabad brands this year</span>
                 </div>
 
-                <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-2.5 text-[11px] text-paper/50 sm:mt-6 sm:text-xs">
+                <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-2.5 text-[11px] text-white/75 sm:mt-6 sm:text-xs">
                   <div className="flex items-center gap-2">
-                    <Clock className="h-3.5 w-3.5 text-signal" strokeWidth={2} />
+                    <Clock className="h-3.5 w-3.5" strokeWidth={2} />
                     Reply within 24 hours
                   </div>
                   <div className="flex items-center gap-2">
-                    <ShieldCheck className="h-3.5 w-3.5 text-teal" strokeWidth={2} />
+                    <ShieldCheck className="h-3.5 w-3.5" strokeWidth={2} />
                     No spam, no obligation
                   </div>
                 </div>
 
-                <div className="mt-7 grid grid-cols-3 gap-3 border-t border-line pt-5 sm:mt-8 sm:gap-4 sm:pt-6">
+                <div className="mt-7 grid grid-cols-3 gap-3 border-t border-white/20 pt-5 sm:mt-8 sm:gap-4 sm:pt-6">
                   {miniStats.map((s) => (
                     <div key={s.label}>
-                      <div className="font-display text-base font-semibold text-paper sm:text-xl">{s.value}</div>
-                      <div className="mt-0.5 text-[9.5px] leading-snug text-paper/45 sm:text-[11px]">{s.label}</div>
+                      <div className="font-display text-base font-bold sm:text-xl">{s.value}</div>
+                      <div className="mt-0.5 text-[9.5px] leading-snug text-white/70 sm:text-[11px]">{s.label}</div>
                     </div>
                   ))}
                 </div>
               </div>
+            </Reveal>
 
+            <Reveal direction="right" delay={100}>
               <div className="flex w-full min-w-0 flex-col gap-3 md:w-auto md:min-w-[280px]">
                 <a
                   href={WHATSAPP_LINK}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="shimmer-btn group relative flex min-h-[48px] items-center justify-between gap-4 overflow-hidden rounded-full px-5 font-mono text-[12px] uppercase tracking-wider text-white shadow-lg transition-transform hover:scale-[1.02] sm:px-6 sm:text-[13px]"
-                  style={{ background: "linear-gradient(90deg, var(--signal), var(--teal))" }}
+                  className="shimmer-btn group relative flex min-h-[48px] items-center justify-between gap-4 overflow-hidden rounded-full bg-white px-5 font-mono text-[12px] font-semibold uppercase tracking-wider text-signal shadow-lg transition-transform hover:scale-[1.02] sm:px-6 sm:text-[13px]"
                 >
                   <span className="relative flex items-center gap-2">
                     <MessageCircle className="h-4 w-4" strokeWidth={2} />
@@ -1736,7 +1643,7 @@ function CTA() {
 
                 <a
                   href="mailto:hello@gkdigitalsolutions.in"
-                  className="group flex min-h-[48px] items-center justify-between gap-4 rounded-full border border-line px-5 font-mono text-[12px] uppercase tracking-wider text-paper/80 transition-colors hover:border-teal/50 hover:text-teal sm:px-6 sm:text-[13px]"
+                  className="group flex min-h-[48px] items-center justify-between gap-4 rounded-full border border-white/40 px-5 font-mono text-[12px] uppercase tracking-wider text-white transition-colors hover:bg-white/10 sm:px-6 sm:text-[13px]"
                 >
                   <span className="flex items-center gap-2">
                     <Mail className="h-4 w-4" strokeWidth={2} />
@@ -1744,14 +1651,10 @@ function CTA() {
                   </span>
                   <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" strokeWidth={2} />
                 </a>
-
-                <p className="pt-1 text-center font-mono text-[9px] uppercase tracking-wider text-paper/30 sm:text-[10px] md:text-left">
-                  Takes 2 minutes &middot; Sent 40+ audits so far
-                </p>
               </div>
-            </div>
+            </Reveal>
           </div>
-        </Reveal>
+        </div>
       </div>
     </section>
   );
@@ -1759,13 +1662,9 @@ function CTA() {
 
 // ---------- Home Page ----------
 export default function Home() {
-  // overflow-x-hidden on <main> is the page-level safety net: even if a
-  // nested element ever pushes wider than the viewport, it clips here
-  // instead of creating horizontal scroll on mobile.
   return (
     <main className="relative overflow-x-hidden">
       <ScrollProgress />
-      <GrainOverlay />
       <CursorAura />
       <Hero />
       <IndustryStrip />
