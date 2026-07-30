@@ -850,24 +850,39 @@ function Services() {
 
 // ---------- Process ----------
 const steps = [
-  { n: "01", title: "Audit", desc: "We pull your last 90 days of ad and lead data and show you exactly where budget is leaking before we touch a single campaign." },
-  { n: "02", title: "Build", desc: "Campaigns, landing pages and CRM pipeline stages get built together — so every lead has somewhere to go the moment it comes in." },
-  { n: "03", title: "Launch", desc: "We go live with a tracked baseline, so from day one you can see cost-per-lead and cost-per-close side by side." },
-  { n: "04", title: "Optimize", desc: "Weekly review against pipeline data, not platform dashboards — we cut what doesn't close, and scale what does." },
+  {
+    n: "1",
+    title: "Audit",
+    desc: "We pull your last 90 days of ad and lead data and show you exactly where budget is leaking before we touch a single campaign.",
+    icon: Search,
+  },
+  {
+    n: "2",
+    title: "Build",
+    desc: "Campaigns, landing pages and CRM pipeline stages get built together — so every lead has somewhere to go the moment it comes in.",
+    icon: Wrench,
+  },
+  {
+    n: "3",
+    title: "Launch",
+    desc: "We go live with a tracked baseline, so from day one you can see cost-per-lead and cost-per-close side by side.",
+    icon: Rocket,
+  },
+  {
+    n: "4",
+    title: "Optimize",
+    desc: "Weekly review against pipeline data, not platform dashboards — we cut what doesn't close, and scale what does.",
+    icon: TrendingUp,
+  },
 ];
 
 function Process() {
   return (
     <section id="process" className="relative py-14 sm:py-16 md:py-24">
       <ChevronDivider className="absolute -top-[11px] left-1/2 -translate-x-1/2" />
-      <style>{`
-        @keyframes draw-line { from { transform: scaleX(0); } to { transform: scaleX(1); } }
-        .process-line { animation: draw-line 1.4s ease-out forwards; transform-origin: left; }
-        @media (prefers-reduced-motion: reduce) { .process-line { animation: none !important; transform: scaleX(1); } }
-      `}</style>
-      <div className="mx-auto max-w-6xl px-5 sm:px-6">
+      <div className="mx-auto max-w-4xl px-5 sm:px-6">
         <Reveal>
-          <div className="max-w-2xl">
+          <div className="max-w-2xl text-center mx-auto">
             <h2 className={`font-display font-extrabold tracking-tight text-paper ${fluid.h2}`}>How we work</h2>
             <p className={`mt-3 text-paper/60 ${fluid.body}`}>
               No black-box retainers. Four stages, each one handed off with
@@ -876,154 +891,72 @@ function Process() {
           </div>
         </Reveal>
 
-        <div className="relative mt-10 sm:mt-12 md:mt-16">
+        {/* Vertical alternating steps with dotted connector */}
+        <div className="relative mt-14 sm:mt-16">
+          {/* dotted connector line */}
           <div
-            className="absolute left-4 top-1 bottom-1 w-px sm:hidden"
-            style={{ background: "linear-gradient(180deg, var(--signal), var(--teal))" }}
+            className="absolute left-1/2 top-0 bottom-0 hidden w-px -translate-x-1/2 sm:block"
+            style={{
+              backgroundImage: "linear-gradient(var(--line) 50%, transparent 50%)",
+              backgroundSize: "2px 12px",
+              backgroundRepeat: "repeat-y",
+            }}
             aria-hidden="true"
           />
-          <div className="relative hidden sm:block">
-            <div
-              className="process-line absolute left-0 right-0 top-[calc(0.9rem)] h-px"
-              style={{ background: "linear-gradient(90deg, var(--signal), var(--teal))" }}
-            />
-          </div>
-          <div className="grid gap-7 sm:grid-cols-2 sm:gap-8 md:grid-cols-4">
-            {steps.map((step, i) => (
-              <Reveal key={step.n} delay={i * 90} direction={i % 2 === 0 ? "down" : "up"}>
-                <div className="group relative flex gap-4 sm:block sm:gap-0">
-                  <div className="relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-line bg-ink-panel font-mono text-xs text-signal-dim shadow-sm transition-colors group-hover:border-signal/60 group-hover:text-signal">
-                    {step.n}
+
+          <div className="space-y-10 sm:space-y-16">
+            {steps.map((step, i) => {
+              const Icon = step.icon;
+              const flip = i % 2 === 1;
+              return (
+                <Reveal key={step.n} delay={i * 100} direction={flip ? "right" : "left"}>
+                  <div
+                    className={`relative flex flex-col items-center gap-5 sm:flex-row sm:gap-8 ${
+                      flip ? "sm:flex-row-reverse" : ""
+                    }`}
+                  >
+                    {/* number badge, centered on the connector for sm+ */}
+                    <div
+                      className="relative z-10 flex h-9 w-9 shrink-0 items-center justify-center rounded-full font-display text-sm font-extrabold text-white shadow-md sm:absolute sm:left-1/2 sm:top-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2"
+                      style={{ background: "linear-gradient(135deg, var(--signal), var(--teal))" }}
+                    >
+                      {step.n}
+                    </div>
+
+                    {/* illustration (blob shape) + card, alternating sides */}
+                    <div className={`flex w-full items-center gap-5 sm:w-1/2 ${flip ? "sm:flex-row-reverse sm:pl-10" : "sm:pr-10"}`}>
+                      <div
+                        className="relative flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden sm:h-28 sm:w-28"
+                        style={{
+                          background: i % 2 === 0 ? "rgba(109,58,242,0.12)" : "rgba(61,111,242,0.12)",
+                          borderRadius: i % 2 === 0 ? "60% 40% 30% 70% / 60% 30% 70% 40%" : "40% 60% 70% 30% / 30% 60% 40% 70%",
+                        }}
+                      >
+                        {/* Drop your downloaded Storyset SVG at public/illustrations/step-{n}.svg — falls back to an icon if missing */}
+                        <img
+                          src={`/illustrations/step-${step.n}.svg`}
+                          alt={`${step.title} illustration`}
+                          className="relative z-10 h-16 w-16 object-contain sm:h-20 sm:w-20"
+                          onError={(e) => {
+                            e.currentTarget.style.display = "none";
+                            e.currentTarget.nextElementSibling?.classList.remove("hidden");
+                          }}
+                        />
+                        <Icon className="relative z-10 hidden h-8 w-8 text-signal" strokeWidth={1.5} />
+                      </div>
+                      <div className={flip ? "sm:text-right" : ""}>
+                        <h3 className="font-display text-lg font-bold text-paper sm:text-xl">{step.title}</h3>
+                        <p className="mt-1.5 text-[13px] leading-relaxed text-paper/60 sm:text-sm">{step.desc}</p>
+                      </div>
+                    </div>
+
+                    {/* empty spacer for the opposite column on sm+ */}
+                    <div className="hidden sm:block sm:w-1/2" aria-hidden="true" />
                   </div>
-                  <div className="sm:mt-4">
-                    <h3 className="font-display text-base font-bold text-paper sm:text-lg">{step.title}</h3>
-                    <p className="mt-1.5 text-[13px] leading-relaxed text-paper/60 sm:mt-2 sm:text-sm">{step.desc}</p>
-                  </div>
-                </div>
-              </Reveal>
-            ))}
+                </Reveal>
+              );
+            })}
           </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ---------- Case Studies ----------
-const caseStudies = [
-  {
-    icon: Building2,
-    industry: "Real Estate",
-    client: "Mid-size developer, Kokapet",
-    challenge: "Leads were coming in through five different channels with no way to tell which ones actually walked a site visit.",
-    approach: "Unified Meta, Google and WhatsApp lead capture into one CRM pipeline with source-level tagging and auto-routing to the sales team.",
-    result: "31%",
-    resultLabel: "more site visits booked in 60 days",
-  },
-  {
-    icon: HomeIcon,
-    industry: "Interior Design",
-    client: "Full-home interiors studio",
-    challenge: "Follow-up on enquiries was manual and inconsistent, so warm leads went cold before a quotation was even sent.",
-    approach: "Built a WhatsApp automation that triages new leads by budget and timeline, and drops a same-day callback task into the CRM.",
-    result: "2.6x",
-    resultLabel: "faster first response time",
-  },
-  {
-    icon: Scissors,
-    industry: "Skin & Hair Clinic",
-    client: "Multi-branch aesthetics clinic",
-    challenge: "Ad spend was rising but the clinic couldn't tell which campaigns led to booked consultations versus just page likes.",
-    approach: "Rebuilt campaign structure around consultation-booking events and connected booking data back into weekly ad reporting.",
-    result: "42%",
-    resultLabel: "lower cost per booked consultation",
-  },
-];
-
-function CaseStudyCard({ c, index }: { c: (typeof caseStudies)[number]; index: number }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const handleMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const el = ref.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-    el.style.setProperty("--x", `${x}%`);
-    el.style.setProperty("--y", `${y}%`);
-  };
-
-  return (
-    <div
-      ref={ref}
-      onMouseMove={handleMove}
-      className="group relative flex h-full flex-col overflow-hidden rounded-[22px] bg-ink-panel p-5 shadow-[0_2px_20px_rgba(109,58,242,0.08)] transition-shadow duration-300 hover:shadow-[0_12px_30px_rgba(109,58,242,0.15)] sm:p-6"
-    >
-      <div
-        className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-        style={{ background: "radial-gradient(260px circle at var(--x, 50%) var(--y, 50%), rgba(109,58,242,0.08), transparent 65%)" }}
-        aria-hidden="true"
-      />
-
-      <div className="relative flex items-center justify-between">
-        <div className="flex items-center gap-2.5">
-          <div
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl"
-            style={{ background: "linear-gradient(135deg, rgba(109,58,242,0.12), rgba(61,111,242,0.12))" }}
-          >
-            <c.icon className="h-4 w-4 text-signal" strokeWidth={1.75} />
-          </div>
-          <div>
-            <div className="font-mono text-[9px] uppercase tracking-wider text-teal">{c.industry}</div>
-            <div className="text-[12px] text-paper/50">{c.client}</div>
-          </div>
-        </div>
-        <span className="font-mono text-[10px] text-paper/25">0{index + 1}</span>
-      </div>
-
-      <div className="relative mt-5 space-y-3.5 border-t border-line pt-4 sm:mt-6">
-        <div>
-          <span className="font-mono text-[9px] uppercase tracking-wider text-paper/40">The challenge</span>
-          <p className="mt-1 text-[12.5px] leading-relaxed text-paper/70 sm:text-[13px]">{c.challenge}</p>
-        </div>
-        <div>
-          <span className="font-mono text-[9px] uppercase tracking-wider text-paper/40">What we did</span>
-          <p className="mt-1 text-[12.5px] leading-relaxed text-paper/70 sm:text-[13px]">{c.approach}</p>
-        </div>
-      </div>
-
-      <div className="relative mt-5 flex items-end justify-between border-t border-line pt-4 sm:mt-6">
-        <div>
-          <div className="font-display text-2xl font-extrabold text-signal sm:text-3xl">{c.result}</div>
-          <div className="mt-0.5 text-[11px] leading-snug text-paper/50 sm:text-xs">{c.resultLabel}</div>
-        </div>
-        <ArrowUpRight className="h-4 w-4 text-paper/30 transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-signal" strokeWidth={2} />
-      </div>
-    </div>
-  );
-}
-
-function CaseStudies() {
-  return (
-    <section id="case-studies" className="relative py-14 sm:py-16 md:py-24">
-      <ChevronDivider className="absolute -top-[11px] left-1/2 -translate-x-1/2" />
-      <div className="mx-auto max-w-6xl px-5 sm:px-6">
-        <Reveal direction="left">
-          <span className={`font-mono uppercase text-signal ${fluid.eyebrow}`}>Proof, not promises</span>
-          <h2 className={`mt-2 max-w-xl font-display font-extrabold tracking-tight text-paper sm:mt-3 ${fluid.h2}`}>
-            Three problems we&apos;ve actually solved
-          </h2>
-          <p className={`mt-3 max-w-xl text-paper/60 ${fluid.body}`}>
-            Every engagement starts from a real bottleneck in the pipeline —
-            not a generic ad-spend target.
-          </p>
-        </Reveal>
-
-        <div className="mt-8 grid gap-4 sm:mt-10 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 md:mt-14">
-          {caseStudies.map((c, i) => (
-            <Reveal key={c.client} delay={i * 90} direction={i % 3 === 0 ? "left" : i % 3 === 1 ? "up" : "right"}>
-              <CaseStudyCard c={c} index={i} />
-            </Reveal>
-          ))}
         </div>
       </div>
     </section>
@@ -1237,47 +1170,6 @@ function Results() {
   );
 }
 
-// ---------- Portfolio teaser ----------
-const portfolioTeasers = [
-  { tag: "Local SEO & Lead Generation", title: "Real Estate Brand" },
-  { tag: "Google Ads & Meta Ads ROI", title: "E-Commerce Store" },
-  { tag: "Website Redesign & Local SEO", title: "Healthcare Clinic" },
-  { tag: "Meta Ads & WhatsApp Booking", title: "Skin & Hair Clinic" },
-];
-
-function PortfolioTeaser() {
-  return (
-    <section className="relative py-14 sm:py-16 md:py-24">
-      <ChevronDivider className="absolute -top-[11px] left-1/2 -translate-x-1/2" />
-      <div className="mx-auto max-w-6xl px-5 sm:px-6">
-        <Reveal>
-          <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-            <h2 className={`font-display font-extrabold tracking-tight text-paper ${fluid.h2}`}>Real work. Real growth.</h2>
-            <Link href="/portfolio" className="flex items-center gap-1 font-mono text-[11px] uppercase tracking-wider text-teal hover:underline sm:text-[12px]">
-              View full portfolio
-              <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={2} />
-            </Link>
-          </div>
-        </Reveal>
-
-        <div className="mt-7 grid gap-4 sm:mt-10 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
-          {portfolioTeasers.map((p, i) => (
-            <Reveal key={p.title} delay={i * 80} direction={i % 2 === 0 ? "left" : "right"}>
-              <Link
-                href="/portfolio"
-                className="group block h-full rounded-[22px] border border-dashed border-line bg-ink-panel/60 p-5 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-signal/40 hover:bg-ink-panel sm:p-6"
-              >
-                <span className="font-mono text-[9px] uppercase tracking-wider text-paper/40 sm:text-[10px]">{p.tag}</span>
-                <h3 className="mt-2.5 font-display text-base font-bold text-paper sm:mt-3 sm:text-lg">{p.title}</h3>
-                <ArrowUpRight className="mt-3 h-4 w-4 text-paper/30 transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-signal sm:mt-4" strokeWidth={2} />
-              </Link>
-            </Reveal>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
 
 // ---------- Engagement models ----------
 const engagementModels = [
@@ -1691,12 +1583,10 @@ export default function Home() {
       <IndustryStrip />
       <Services />
       <Process />
-      <CaseStudies />
       <WhyChooseTeaser />
       <ComparisonSection />
       <TrustStrip />
       <Results />
-      <PortfolioTeaser />
       <EngagementModels />
       <TestimonialTeaser />
       <FounderStrip />

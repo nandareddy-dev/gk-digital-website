@@ -26,11 +26,11 @@ const fluid = {
    permission are available. No numbers are fabricated here on purpose.
    `tag` doubles as the filter value for PortfolioFilterBar. */
 const caseStudies = [
-  { title: "Real Estate Brand", tag: "Real Estate", desc: "Local SEO & Lead Generation" },
-  { title: "E-Commerce Store", tag: "E-Commerce", desc: "Google Ads & Meta Ads ROI" },
-  { title: "Healthcare Clinic", tag: "Healthcare", desc: "Website Redesign & Local SEO" },
-  { title: "Restaurant Chain", tag: "Hospitality", desc: "Social Media Growth" },
-  { title: "Skin & Hair Clinic", tag: "Skin & Hair", desc: "Meta Ads & WhatsApp Booking" },
+  { title: "Real Estate Brand", tag: "Real Estate", desc: "Local SEO & Lead Generation", glow: "#6D3AF2" },
+  { title: "E-Commerce Store", tag: "E-Commerce", desc: "Google Ads & Meta Ads ROI", glow: "#22B07D" },
+  { title: "Healthcare Clinic", tag: "Healthcare", desc: "Website Redesign & Local SEO", glow: "#3D6FF2" },
+  { title: "Restaurant Chain", tag: "Hospitality", desc: "Social Media Growth", glow: "#F2A93A" },
+  { title: "Skin & Hair Clinic", tag: "Skin & Hair", desc: "Meta Ads & WhatsApp Booking", glow: "#FF5C8A" },
 ];
 
 const filterTags = [...new Set(caseStudies.map((cs) => cs.tag))];
@@ -119,8 +119,20 @@ export default function PortfolioPage() {
             {caseStudies.map((cs, i) => (
               <Reveal key={cs.title} delay={i * 70}>
                 <div className="portfolio-card h-full" data-tag={cs.tag}>
-                <SpotlightCard className="h-full rounded-2xl border border-dashed border-line bg-ink-panel/30 p-6 transition-all duration-300 hover:-translate-y-1 hover:border-signal/40 sm:p-8">
-                  <div className="flex items-start justify-between gap-3">
+                <SpotlightCard className="relative h-full overflow-hidden rounded-2xl border border-dashed border-line bg-ink-panel/30 p-6 transition-all duration-300 hover:-translate-y-1 hover:border-signal/40 sm:p-8">
+                  {/* colour fade — soft glow unique per card, sits behind the content */}
+                  <div
+                    className="pointer-events-none absolute -right-12 -top-12 h-44 w-44 rounded-full opacity-[0.16] blur-3xl transition-opacity duration-300 group-hover:opacity-25"
+                    style={{ background: cs.glow }}
+                    aria-hidden="true"
+                  />
+                  <div
+                    className="pointer-events-none absolute -bottom-16 -left-10 h-40 w-40 rounded-full opacity-[0.08] blur-3xl"
+                    style={{ background: cs.glow }}
+                    aria-hidden="true"
+                  />
+
+                  <div className="relative flex items-start justify-between gap-3">
                     <span className="font-mono text-[10px] uppercase tracking-wider text-paper/40 sm:text-[11px]">
                       {cs.desc}
                     </span>
@@ -129,26 +141,26 @@ export default function PortfolioPage() {
                       Coming soon
                     </span>
                   </div>
-                  <h3 className="mt-3 font-display text-lg font-semibold text-paper sm:text-xl">
+                  <h3 className="relative mt-3 font-display text-lg font-semibold text-paper sm:text-xl">
                     {cs.title}
                   </h3>
 
                   {/* Preview structure — sets expectations without fabricating numbers */}
-                  <div className="mt-5 flex items-center gap-4 sm:mt-6 sm:gap-5">
+                  <div className="relative mt-5 flex items-center gap-4 sm:mt-6 sm:gap-5">
                     {previewStructure.map((p) => (
                       <div key={p.label} className="flex flex-1 flex-col items-center gap-1.5 text-center">
                         <div
                           className="flex h-8 w-8 items-center justify-center rounded-full sm:h-9 sm:w-9"
-                          style={{ background: "linear-gradient(135deg, rgba(27,84,199,0.12), rgba(122,193,66,0.12))" }}
+                          style={{ background: `${cs.glow}22` }}
                         >
-                          <p.icon className="h-3.5 w-3.5 text-signal sm:h-4 sm:w-4" strokeWidth={1.75} />
+                          <p.icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" strokeWidth={1.75} style={{ color: cs.glow }} />
                         </div>
                         <span className="text-[9.5px] leading-tight text-paper/40 sm:text-[10px]">{p.label}</span>
                       </div>
                     ))}
                   </div>
 
-                  <p className="mt-4 text-[12.5px] leading-relaxed text-paper/40 sm:text-sm">
+                  <p className="relative mt-4 text-[12.5px] leading-relaxed text-paper/40 sm:text-sm">
                     Case study coming soon — challenge, strategy and
                     real results will be published here once client data
                     and permission are available.
