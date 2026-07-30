@@ -1,10 +1,5 @@
 // app/locations/[slug]/page.tsx
-// Idi ఒక్కటే page — anni locations (hyderabad, kphb, miyapur, etc.) ki idే వాడుతుంది.
-// Kotha location add cheyalante — components/data/locations.ts lo entry add cheste chalu.
-//
-// IMPORTANT: Ippudu unna app/locations/hyderabad/page.tsx mariyu
-// app/locations/kphb/page.tsx (static folders) ni DELETE cheyi — lekapote
-// route conflict vastundi (Next.js rendu unte error isthundi: static vs dynamic clash).
+// FIX: Next.js 15/16 lo params ippudu Promise ga vastundi — await cheyali.
 
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -17,12 +12,13 @@ export async function generateStaticParams() {
   return locations.map((loc) => ({ slug: loc.slug }));
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { slug: string };
-}): Promise<Metadata> {
-  const location = getLocationBySlug(params.slug);
+type PageProps = {
+  params: Promise<{ slug: string }>;
+};
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const location = getLocationBySlug(slug);
   if (!location) return {};
   return {
     title: location.metaTitle,
@@ -30,12 +26,9 @@ export async function generateMetadata({
   };
 }
 
-export default function LocationPage({
-  params,
-}: {
-  params: { slug: string };
-}) {
-  const location = getLocationBySlug(params.slug);
+export default async function LocationPage({ params }: PageProps) {
+  const { slug } = await params;
+  const location = getLocationBySlug(slug);
   if (!location) notFound();
 
   return (
