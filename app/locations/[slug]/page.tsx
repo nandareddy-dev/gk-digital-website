@@ -1,40 +1,43 @@
+// app/locations/[slug]/page.tsx
+// Idi ఒక్కటే page — anni locations (hyderabad, kphb, miyapur, etc.) ki idే వాడుతుంది.
+// Kotha location add cheyalante — components/data/locations.ts lo entry add cheste chalu.
+//
+// IMPORTANT: Ippudu unna app/locations/hyderabad/page.tsx mariyu
+// app/locations/kphb/page.tsx (static folders) ni DELETE cheyi — lekapote
+// route conflict vastundi (Next.js rendu unte error isthundi: static vs dynamic clash).
+
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import Link from "next/link";
 import { MapPin, ArrowUpRight, CheckCircle2, Star } from "lucide-react";
 import Reveal from "@/components/Reveal";
+import { locations, getLocationBySlug } from "@/components/data/locations";
 
-export const metadata: Metadata = {
-  title: "Digital Marketing Agency in Hyderabad | GK Digital Solutions",
-  description:
-    "GK Digital Solutions is a Hyderabad-based digital marketing agency offering SEO, Google Ads, Meta Ads, and website design for local businesses.",
-};
+export async function generateStaticParams() {
+  return locations.map((loc) => ({ slug: loc.slug }));
+}
 
-const localHighlights = [
-  "Based in Hyderabad — we understand the local market, not just national trends",
-  "Worked with Hyderabad businesses across interior design, real estate, and D2C",
-  "In-person meetings available for Hyderabad-based clients",
-  "Local SEO expertise for 'near me' and area-specific searches",
-];
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string };
+}): Promise<Metadata> {
+  const location = getLocationBySlug(params.slug);
+  if (!location) return {};
+  return {
+    title: location.metaTitle,
+    description: location.metaDescription,
+  };
+}
 
-const neighborhoods = [
-  "Banjara Hills",
-  "Jubilee Hills",
-  "Gachibowli",
-  "Kondapur",
-  "Madhapur",
-  "Kukatpally",
-  "Secunderabad",
-  "Hitech City",
-];
+export default function LocationPage({
+  params,
+}: {
+  params: { slug: string };
+}) {
+  const location = getLocationBySlug(params.slug);
+  if (!location) notFound();
 
-const services = [
-  "Local SEO & Google Business Profile optimization",
-  "Google Ads for Hyderabad-based service businesses",
-  "Meta Ads targeted to local neighborhoods",
-  "Website design for Hyderabad businesses",
-];
-
-export default function HyderabadLocationPage() {
   return (
     <>
       <section className="border-b border-line">
@@ -42,16 +45,14 @@ export default function HyderabadLocationPage() {
           <Reveal>
             <span className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider text-signal">
               <MapPin className="h-3.5 w-3.5" strokeWidth={2} />
-              Hyderabad, Telangana
+              {location.areaLabel}
             </span>
             <h1 className="mt-3 max-w-2xl font-display text-4xl font-bold leading-tight text-paper md:text-5xl">
               Digital Marketing Agency in{" "}
-              <span className="brand-gradient-text">Hyderabad.</span>
+              <span className="brand-gradient-text">{location.name}.</span>
             </h1>
             <p className="mt-5 max-w-xl text-base text-paper/60">
-              We&apos;re a Hyderabad-based team helping local businesses get
-              found, get leads, and grow — with the kind of market
-              understanding that only comes from working here.
+              {location.intro}
             </p>
           </Reveal>
 
@@ -77,11 +78,11 @@ export default function HyderabadLocationPage() {
       <section className="mx-auto max-w-5xl px-4 py-16 md:py-20">
         <Reveal>
           <h2 className="font-display text-2xl font-semibold text-paper md:text-3xl">
-            Why local businesses choose us
+            Why {location.name} businesses choose us
           </h2>
         </Reveal>
         <div className="mt-8 space-y-3">
-          {localHighlights.map((point, i) => (
+          {location.localHighlights.map((point, i) => (
             <Reveal key={point} delay={i * 80}>
               <div className="flex items-start gap-3">
                 <CheckCircle2
@@ -95,16 +96,16 @@ export default function HyderabadLocationPage() {
         </div>
       </section>
 
-      {/* Services for Hyderabad */}
+      {/* Services */}
       <section className="border-y border-line bg-ink-panel/20 py-16 md:py-20">
         <div className="mx-auto max-w-5xl px-4">
           <Reveal>
             <h2 className="font-display text-2xl font-semibold text-paper md:text-3xl">
-              What we offer Hyderabad businesses
+              What we offer {location.name} businesses
             </h2>
           </Reveal>
           <div className="mt-8 grid gap-4 sm:grid-cols-2">
-            {services.map((s, i) => (
+            {location.services.map((s, i) => (
               <Reveal key={s} delay={i * 80}>
                 <div className="flex items-start gap-3 rounded-xl border border-line bg-ink p-4">
                   <Star className="mt-0.5 h-4 w-4 shrink-0 text-signal" strokeWidth={2} />
@@ -120,15 +121,15 @@ export default function HyderabadLocationPage() {
       <section className="mx-auto max-w-5xl px-4 py-16 md:py-20">
         <Reveal>
           <h2 className="font-display text-2xl font-semibold text-paper md:text-3xl">
-            Areas we serve across Hyderabad
+            Areas we serve near {location.name}
           </h2>
           <p className="mt-3 max-w-xl text-sm text-paper/60">
-            We work with businesses across Hyderabad and the surrounding
+            We work with businesses across {location.name} and the surrounding
             areas, including:
           </p>
         </Reveal>
         <div className="mt-6 flex flex-wrap gap-2.5">
-          {neighborhoods.map((n, i) => (
+          {location.neighborhoods.map((n, i) => (
             <Reveal key={n} delay={i * 40}>
               <span className="rounded-full border border-line px-4 py-2 text-sm text-paper/60">
                 {n}
@@ -144,7 +145,7 @@ export default function HyderabadLocationPage() {
           <div className="flex flex-col items-start gap-4 rounded-2xl border border-line bg-ink-panel/40 p-8 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h3 className="font-display text-lg font-semibold text-paper">
-                Ready to grow your Hyderabad business?
+                Ready to grow your {location.name} business?
               </h3>
               <p className="mt-1 text-sm text-paper/60">
                 Let&apos;s talk — get a free audit of where you stand today.

@@ -1,4 +1,5 @@
 import { MetadataRoute } from 'next'
+import { locations } from '@/components/data/locations'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://gkdigitalsolutions.in'
@@ -24,10 +25,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/why-choose-us',
   ]
 
-  return staticRoutes.map((route) => ({
+  // locations.ts lo add chesina prathi location automatic ga ikkada vachestundi
+  const locationRoutes = locations.map((loc) => `/locations/${loc.slug}`)
+
+  const allRoutes = [...staticRoutes, ...locationRoutes]
+
+  return allRoutes.map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
     changeFrequency: 'weekly' as const,
-    priority: route === '' ? 1 : 0.8,
+    priority: route === '' ? 1 : route.startsWith('/locations/') ? 0.9 : 0.8,
   }))
 }
