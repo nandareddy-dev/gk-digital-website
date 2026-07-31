@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -339,16 +340,20 @@ function HeroCarousel() {
         ))}
       </div>
 
-      {/* dot indicators */}
-      <div className="absolute -bottom-8 left-1/2 flex -translate-x-1/2 items-center gap-1.5">
+      {/* dot indicators — larger invisible tap area, visible dot stays small */}
+      <div className="absolute -bottom-8 left-1/2 flex -translate-x-1/2 items-center gap-0.5">
         {heroSlides.map((s, i) => (
           <button
             key={s.label}
             onClick={() => setActive(i)}
             aria-label={`Show ${s.label}`}
-            className="h-1.5 rounded-full transition-all duration-300"
-            style={{ width: active === i ? "20px" : "6px", background: active === i ? "var(--signal)" : "var(--line)" }}
-          />
+            className="flex h-8 w-8 items-center justify-center"
+          >
+            <span
+              className="block h-1.5 rounded-full transition-all duration-300"
+              style={{ width: active === i ? "20px" : "6px", background: active === i ? "var(--signal)" : "var(--line)" }}
+            />
+          </button>
         ))}
       </div>
 
@@ -633,13 +638,24 @@ function IndustryStrip() {
                     opacity: abs > 2 ? 0 : 1,
                     zIndex: 100 - Math.round(abs),
                     pointerEvents: isActive ? "auto" : "none",
-                    background: s.image ? `url('${s.image}') center/cover no-repeat` : s.gradient,
+                    background: s.image ? undefined : s.gradient,
                     transition: "transform 800ms cubic-bezier(0.2,0.7,0,1), filter 800ms cubic-bezier(0.2,0.7,0,1)",
                     boxShadow: isActive
                       ? "0 30px 70px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.15) inset"
                       : "0 20px 50px rgba(0,0,0,0.45)",
                   }}
                 >
+                  {/* Optimized image via next/image — only the active + immediate neighbors load eagerly */}
+                  {s.image && (
+                    <Image
+  src={s.image}
+  alt={`${s.title} — ${s.subtitle}`}
+  fill
+  sizes="(max-width: 640px) 260px, 42vw"
+  className="object-cover"
+  {...(i === 0 ? { priority: true } : { loading: abs <= 1 ? "eager" : "lazy" })}
+/>
+                  )}
                   <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/45 to-black/25" />
                   <div className="relative flex h-full flex-col justify-between p-4 sm:p-5">
                     <div>
@@ -663,20 +679,25 @@ function IndustryStrip() {
           </div>
         </div>
 
-        <div className="mt-8 flex items-center justify-center gap-1.5">
+        {/* dot indicators — larger invisible tap area, visible dot stays small */}
+        <div className="mt-8 flex items-center justify-center gap-0.5">
           {industrySlides.map((s, i) => (
             <button
               key={s.title}
               onClick={() => setActive(i)}
               aria-label={`Show ${s.title}`}
-              className="rounded-full transition-all duration-300"
-              style={{
-                width: active === i ? "16px" : "12px",
-                height: "12px",
-                background: active === i ? "linear-gradient(180deg, #82a0ff, #9ef7d2)" : "rgba(255,255,255,0.25)",
-                transform: active === i ? "scale(1.1)" : "scale(1)",
-              }}
-            />
+              className="flex h-8 w-8 items-center justify-center"
+            >
+              <span
+                className="block rounded-full transition-all duration-300"
+                style={{
+                  width: active === i ? "16px" : "12px",
+                  height: "12px",
+                  background: active === i ? "linear-gradient(180deg, #82a0ff, #9ef7d2)" : "rgba(255,255,255,0.25)",
+                  transform: active === i ? "scale(1.1)" : "scale(1)",
+                }}
+              />
+            </button>
           ))}
         </div>
 
@@ -815,7 +836,7 @@ function Services() {
             <div>
               <span className={`font-mono uppercase text-signal ${fluid.eyebrow}`}>What we run</span>
               <h2 className={`mt-2 font-display font-extrabold tracking-tight text-paper sm:mt-3 ${fluid.h2}`}>
-                Eight systems.One pipeline.
+                Eight systems. One pipeline.
               </h2>
             </div>
           </Reveal>
@@ -1325,15 +1346,19 @@ function TestimonialTeaser() {
               >
                 <ChevronLeft className="h-4 w-4" strokeWidth={2} />
               </button>
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-0.5">
                 {testimonials.map((t, i) => (
                   <button
                     key={t.attribution}
                     onClick={() => setIndex(i)}
                     aria-label={`Show testimonial ${i + 1}`}
-                    className="h-1.5 rounded-full transition-all duration-300"
-                    style={{ width: i === index ? "20px" : "6px", background: i === index ? "var(--signal)" : "var(--line)" }}
-                  />
+                    className="flex h-8 w-8 items-center justify-center"
+                  >
+                    <span
+                      className="block h-1.5 rounded-full transition-all duration-300"
+                      style={{ width: i === index ? "20px" : "6px", background: i === index ? "var(--signal)" : "var(--line)" }}
+                    />
+                  </button>
                 ))}
               </div>
               <button
@@ -1541,8 +1566,8 @@ function CTA() {
 
             <Reveal direction="right" delay={100}>
               <div className="flex w-full min-w-0 flex-col gap-3 md:w-auto md:min-w-[280px]">
-                <a
-                  href={WHATSAPP_LINK}
+                
+               <a   href={WHATSAPP_LINK}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="shimmer-btn group relative flex min-h-[48px] items-center justify-between gap-4 overflow-hidden rounded-full bg-white px-5 font-mono text-[12px] font-semibold uppercase tracking-wider text-signal shadow-lg transition-transform hover:scale-[1.02] sm:px-6 sm:text-[13px]"

@@ -1,5 +1,6 @@
 // app/locations/[slug]/page.tsx
-// FIX: Next.js 15/16 lo params ippudu Promise ga vastundi — await cheyali.
+// SEO UPDATE: JSON-LD LocalBusiness schema + internal linking to nearby location pages added.
+// Next.js 15/16 lo params Promise ga vastundi — await chesi vadali.
 
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -23,6 +24,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: location.metaTitle,
     description: location.metaDescription,
+    alternates: {
+      canonical: `https://gkdigitalsolutions.in/locations/${slug}`,
+    },
   };
 }
 
@@ -31,8 +35,43 @@ export default async function LocationPage({ params }: PageProps) {
   const location = getLocationBySlug(slug);
   if (!location) notFound();
 
+  // Nearby locations kosam — current location tappa remaining nunchi 4 pick chestunnam
+  // internal linking / topical authority build cheyyadaniki
+  const nearbyLocations = locations
+    .filter((loc) => loc.slug !== slug)
+    .slice(0, 4);
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ProfessionalService",
+    name: `GK Digital Solutions - ${location.name}`,
+    description: location.metaDescription,
+    areaServed: {
+      "@type": "City",
+      name: location.name,
+    },
+    url: `https://gkdigitalsolutions.in/locations/${slug}`,
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: location.name,
+      addressRegion: "Telangana",
+      addressCountry: "IN",
+    },
+    parentOrganization: {
+      "@type": "Organization",
+      name: "GK Digital Solutions",
+      url: "https://gkdigitalsolutions.in",
+    },
+    serviceType: location.services,
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
       <section className="border-b border-line">
         <div className="mx-auto max-w-5xl px-4 py-20 md:py-28">
           <Reveal>
@@ -131,6 +170,32 @@ export default async function LocationPage({ params }: PageProps) {
           ))}
         </div>
       </section>
+
+      {/* Nearby locations — internal linking for topical authority */}
+      {nearbyLocations.length > 0 && (
+        <section className="border-t border-line bg-ink-panel/20 py-16 md:py-20">
+          <div className="mx-auto max-w-5xl px-4">
+            <Reveal>
+              <h2 className="font-display text-2xl font-semibold text-paper md:text-3xl">
+                We also serve nearby cities
+              </h2>
+            </Reveal>
+            <div className="mt-6 flex flex-wrap gap-3">
+              {nearbyLocations.map((loc, i) => (
+                <Reveal key={loc.slug} delay={i * 60}>
+                  <Link
+                    href={`/locations/${loc.slug}`}
+                    className="inline-flex items-center gap-1.5 rounded-full border border-line px-4 py-2 text-sm text-paper/70 transition-colors hover:border-signal hover:text-signal"
+                  >
+                    <MapPin className="h-3.5 w-3.5" strokeWidth={2} />
+                    Digital Marketing in {loc.name}
+                  </Link>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* CTA */}
       <section className="mx-auto max-w-5xl px-4 pb-20 md:pb-28">
