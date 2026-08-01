@@ -12,8 +12,9 @@ export function generateStaticParams() {
   return blogPosts.map((post) => ({ slug: post.slug }));
 }
 
-export function generateMetadata({ params }: { params: { slug: string } }) {
-  const post = getPostBySlug(params.slug);
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const post = getPostBySlug(slug);
   if (!post) return {};
   const url = `https://gkdigitalsolutions.in/blog/${post.slug}`;
   return {
@@ -27,11 +28,13 @@ export function generateMetadata({ params }: { params: { slug: string } }) {
       type: "article",
       publishedTime: post.date,
       section: post.category,
+      images: [{ url: post.image }],
     },
     twitter: {
       card: "summary_large_image",
       title: post.title,
       description: post.excerpt,
+      images: [post.image],
     },
   };
 }
@@ -59,6 +62,7 @@ export default function BlogPostPage({
     "@type": "Article",
     headline: post.title,
     description: post.excerpt,
+    image: `https://gkdigitalsolutions.in${post.image}`,
     datePublished: post.date,
     dateModified: post.date,
     articleSection: post.category,
