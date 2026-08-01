@@ -15,9 +15,24 @@ export function generateStaticParams() {
 export function generateMetadata({ params }: { params: { slug: string } }) {
   const post = getPostBySlug(params.slug);
   if (!post) return {};
+  const url = `https://gkdigitalsolutions.in/blog/${post.slug}`;
   return {
     title: `${post.title} | GK Digital Solutions Blog`,
     description: post.excerpt,
+    alternates: { canonical: url },
+    openGraph: {
+      title: post.title,
+      description: post.excerpt,
+      url,
+      type: "article",
+      publishedTime: post.date,
+      section: post.category,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.excerpt,
+    },
   };
 }
 
@@ -39,8 +54,35 @@ export default function BlogPostPage({
 
   const related = blogPosts.filter((p) => p.slug !== post.slug).slice(0, 3);
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: post.title,
+    description: post.excerpt,
+    datePublished: post.date,
+    dateModified: post.date,
+    articleSection: post.category,
+    author: {
+      "@type": "Organization",
+      name: "GK Digital Solutions",
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "GK Digital Solutions",
+      url: "https://gkdigitalsolutions.in",
+    },
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": `https://gkdigitalsolutions.in/blog/${post.slug}`,
+    },
+  };
+
   return (
     <main className="relative overflow-x-hidden">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <ScrollProgress />
       <ServicesCursorAura />
 
