@@ -1175,6 +1175,7 @@ function WhyChooseTeaser() {
 }
 
 // ---------- Comparison ----------
+// ---------- Comparison ----------
 const comparisonRows: { label: string; typical: string; us: string }[] = [
   { label: "Lead attribution", typical: "Platform dashboards only", us: "Tracked end-to-end in your CRM" },
   { label: "Reporting", typical: "Monthly PDF, after the fact", us: "Live pipeline, checked weekly together" },
@@ -1185,9 +1186,42 @@ const comparisonRows: { label: string; typical: string; us: string }[] = [
 ];
 
 function ComparisonSection() {
+  const [visible, setVisible] = useState(false);
+  const wrapRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = wrapRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => setVisible(entry.isIntersecting),
+      { threshold: 0.2 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
   return (
     <section id="comparison" className="relative py-14 sm:py-16 md:py-24">
       <ChevronDivider className="absolute -top-[11px] left-1/2 -translate-x-1/2" />
+      <style>{`
+        .cmp-item {
+          opacity: 0;
+          transform: translateY(14px);
+          transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+        }
+        .cmp-item.visible { opacity: 1; transform: translateY(0); }
+        .cmp-card {
+          transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+        }
+        .cmp-card:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 16px 36px rgba(0,0,0,0.14);
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .cmp-item { opacity: 1 !important; transform: none !important; transition: none !important; }
+          .cmp-card:hover { transform: none; }
+        }
+      `}</style>
       <div className="mx-auto max-w-6xl px-5 sm:px-6">
         <Reveal direction="left">
           <span className={`font-mono uppercase text-signal ${fluid.eyebrow}`}>The difference, side by side</span>
@@ -1196,57 +1230,76 @@ function ComparisonSection() {
           </h2>
         </Reveal>
 
-        <Reveal delay={80}>
-          <div className="mt-8 space-y-3 sm:hidden">
-            {comparisonRows.map((row) => (
-              <div key={row.label} className="rounded-xl bg-ink-panel p-4 shadow-[0_2px_16px_rgba(109,58,242,0.06)]">
-                <div className="text-[13px] font-semibold text-paper">{row.label}</div>
-                <div className="mt-3 grid grid-cols-2 gap-3">
-                  <div className="flex items-start gap-1.5 min-w-0">
-                    <X className="mt-0.5 h-3.5 w-3.5 shrink-0 text-paper/30" strokeWidth={2} />
-                    <span className="text-[12px] leading-snug text-paper/50">{row.typical}</span>
-                  </div>
-                  <div
-                    className="flex min-w-0 items-start gap-1.5 rounded-lg p-2 -m-2"
-                    style={{ background: "linear-gradient(180deg, rgba(109,58,242,0.08), rgba(61,111,242,0.05))" }}
-                  >
-                    <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-signal" strokeWidth={2.5} />
-                    <span className="text-[12px] leading-snug text-paper">{row.us}</span>
-                  </div>
+        <div ref={wrapRef} className="mt-10 grid gap-5 sm:mt-14 md:grid-cols-2">
+          {/* Typical agency card */}
+          <Reveal delay={80} direction="left">
+            <div className="cmp-card relative rounded-[20px] border-[0.5px] border-line bg-ink-panel p-6">
+              <div className="mb-5 flex items-center gap-3 border-b border-line pb-4">
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-ink text-paper/40">
+                  <Building2 className="h-4 w-4" strokeWidth={1.75} />
                 </div>
+                <span className="font-display text-sm font-semibold text-paper/70">Typical agency</span>
               </div>
-            ))}
-          </div>
 
-          <div className="mt-12 hidden overflow-hidden rounded-[22px] bg-ink-panel shadow-[0_2px_20px_rgba(109,58,242,0.08)] sm:block">
-            <div className="grid grid-cols-[1.1fr_1fr_1fr] border-b border-line">
-              <div className="p-5 font-mono text-[11px] uppercase tracking-wider text-paper/40">&nbsp;</div>
-              <div className="border-l border-line p-5">
-                <span className="font-mono text-[11px] uppercase tracking-wider text-paper/40">Typical agency</span>
-              </div>
-              <div
-                className="relative border-l border-line p-5"
-                style={{ background: "linear-gradient(180deg, rgba(109,58,242,0.08), rgba(61,111,242,0.05))" }}
-              >
-                <span className="font-mono text-[11px] uppercase tracking-wider text-signal">GK Digital Solutions</span>
+              <div className="space-y-1">
+                {comparisonRows.map((row, i) => (
+                  <div
+                    key={row.label}
+                    className={`cmp-item flex items-start gap-3 py-2.5 ${visible ? "visible" : ""}`}
+                    style={{ transitionDelay: `${i * 80}ms` }}
+                  >
+                    <X className="mt-0.5 h-3.5 w-3.5 shrink-0 text-paper/30" strokeWidth={2} />
+                    <div>
+                      <span className="block text-[10.5px] uppercase tracking-wider text-paper/35">{row.label}</span>
+                      <p className="mt-0.5 text-[13px] font-medium text-paper/60">{row.typical}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
+          </Reveal>
 
-            {comparisonRows.map((row, i) => (
-              <div key={row.label} className={`grid grid-cols-[1.1fr_1fr_1fr] ${i % 2 === 0 ? "bg-ink-panel" : "bg-ink"}`}>
-                <div className="flex items-center p-5 text-sm font-medium text-paper/80">{row.label}</div>
-                <div className="flex items-center gap-2 border-l border-line p-5 text-sm text-paper/50">
-                  <X className="h-3.5 w-3.5 shrink-0 text-paper/30" strokeWidth={2} />
-                  {row.typical}
+          {/* GK Digital Solutions card */}
+          <Reveal delay={160} direction="right">
+            <div
+              className="cmp-card relative rounded-[20px] bg-ink-panel p-6"
+              style={{ border: "2px solid var(--signal)" }}
+            >
+              <span
+                className="absolute -top-[11px] left-6 rounded-lg px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-white"
+                style={{ background: "linear-gradient(90deg, var(--signal), var(--teal))" }}
+              >
+                Recommended
+              </span>
+
+              <div className="mb-5 flex items-center gap-3 border-b border-line pb-4">
+                <div
+                  className="flex h-9 w-9 items-center justify-center rounded-lg"
+                  style={{ background: "linear-gradient(135deg, rgba(109,58,242,0.15), rgba(61,111,242,0.15))" }}
+                >
+                  <Rocket className="h-4 w-4 text-signal" strokeWidth={1.75} />
                 </div>
-                <div className="flex items-center gap-2 border-l border-line p-5 text-sm text-paper">
-                  <Check className="h-3.5 w-3.5 shrink-0 text-signal" strokeWidth={2.5} />
-                  {row.us}
-                </div>
+                <span className="font-display text-sm font-semibold text-signal">GK Digital Solutions</span>
               </div>
-            ))}
-          </div>
-        </Reveal>
+
+              <div className="space-y-1">
+                {comparisonRows.map((row, i) => (
+                  <div
+                    key={row.label}
+                    className={`cmp-item flex items-start gap-3 py-2.5 ${visible ? "visible" : ""}`}
+                    style={{ transitionDelay: `${180 + i * 80}ms` }}
+                  >
+                    <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-signal" strokeWidth={2.5} />
+                    <div>
+                      <span className="block text-[10.5px] uppercase tracking-wider text-teal">{row.label}</span>
+                      <p className="mt-0.5 text-[13px] font-medium text-paper">{row.us}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </Reveal>
+        </div>
       </div>
     </section>
   );
@@ -1254,29 +1307,59 @@ function ComparisonSection() {
 
 // ---------- Trust / guarantee strip ----------
 const trustPoints = [
-  { icon: Lock, title: "You own the data", desc: "Ad accounts, CRM and creative assets stay in your name, always." },
-  { icon: FileText, title: "No lock-in contracts", desc: "Month-to-month by default — we keep the work because it performs." },
-  { icon: Users, title: "One dedicated strategist", desc: "The person who audits your account is the one who runs it." },
-  { icon: ShieldCheck, title: "Weekly, plain-language reports", desc: "Cost-per-lead and cost-per-close, no jargon to translate." },
+  { icon: Lock, tag: "Data ownership", title: "You own the data", desc: "Ad accounts, CRM and creative assets stay in your name, always.", color: "#7f77dd" },
+  { icon: FileText, tag: "Contracts", title: "No lock-in contracts", desc: "Month-to-month by default — we keep the work because it performs.", color: "#1d9e75" },
+  { icon: Users, tag: "Your team", title: "One dedicated strategist", desc: "The person who audits your account is the one who runs it.", color: "#d4537e" },
+  { icon: ShieldCheck, tag: "Reporting", title: "Weekly, plain-language reports", desc: "Cost-per-lead and cost-per-close, no jargon to translate.", color: "#378add" },
 ];
 
 function TrustStrip() {
   return (
-    <section className="relative bg-ink-panel/60 py-10 sm:py-16">
+    <section className="relative bg-ink-panel/60 py-14 sm:py-16 md:py-24">
+      <style>{`
+        .trust-card {
+          transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+        .trust-card:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 16px 34px rgba(0,0,0,0.22);
+        }
+        .trust-badge {
+          transition: transform 0.3s ease;
+        }
+        .trust-card:hover .trust-badge {
+          transform: scale(1.1) rotate(-4deg);
+        }
+      `}</style>
       <div className="mx-auto max-w-6xl px-5 sm:px-6">
-        <div className="grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-2 sm:gap-8 lg:grid-cols-4">
+        <Reveal>
+          <div>
+            <span className={`font-mono uppercase text-signal ${fluid.eyebrow}`}>Why you can trust us</span>
+            <h2 className={`mt-2 max-w-xl font-display font-extrabold tracking-tight text-paper ${fluid.h2}`}>
+              The fine print, up front
+            </h2>
+          </div>
+        </Reveal>
+
+        <div className="mt-8 grid grid-cols-1 gap-4 sm:mt-10 sm:grid-cols-2 md:mt-14">
           {trustPoints.map((t, i) => (
-            <Reveal key={t.title} delay={i * 70} direction={i % 2 === 0 ? "up" : "down"}>
-              <div className="flex min-w-0 gap-2.5 sm:gap-3">
+            <Reveal key={t.title} delay={i * 80} direction={i % 2 === 0 ? "left" : "right"}>
+              <div className="trust-card relative overflow-hidden rounded-[20px] bg-ink-panel p-5 sm:p-6">
+                <span className="mb-3.5 inline-flex items-center gap-1.5 text-[11px] text-paper/45">
+                  <t.icon className="h-3.5 w-3.5" strokeWidth={1.75} />
+                  {t.tag}
+                </span>
+                <h3 className="max-w-[75%] font-display text-[15px] font-bold leading-snug text-paper sm:text-base">
+                  {t.title}
+                </h3>
+                <p className="mt-1.5 max-w-[75%] text-[12.5px] leading-relaxed text-paper/55 sm:text-[13px]">
+                  {t.desc}
+                </p>
                 <div
-                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg sm:h-9 sm:w-9"
-                  style={{ background: "linear-gradient(135deg, rgba(109,58,242,0.12), rgba(61,111,242,0.12))" }}
+                  className="trust-badge absolute bottom-4 right-4 flex h-10 w-10 items-center justify-center rounded-[10px] sm:h-11 sm:w-11"
+                  style={{ background: t.color }}
                 >
-                  <t.icon className="h-3.5 w-3.5 text-signal sm:h-4 sm:w-4" strokeWidth={1.75} />
-                </div>
-                <div className="min-w-0">
-                  <h3 className="font-display text-[12.5px] font-bold leading-snug text-paper sm:text-sm">{t.title}</h3>
-                  <p className="mt-1 hidden text-xs leading-relaxed text-paper/55 sm:block">{t.desc}</p>
+                  <t.icon className="h-[18px] w-[18px] text-white" strokeWidth={1.75} />
                 </div>
               </div>
             </Reveal>

@@ -47,25 +47,25 @@ export default function LiveStatusBadge() {
   if (online === null) return null;
 
   return (
-    <div className="flex items-center gap-2 rounded-full border border-line px-3 py-1.5 text-xs text-paper/60">
-      <span className="relative flex h-2 w-2">
+    <div className="flex items-center gap-2 rounded-full border border-white/15 bg-black/35 px-3.5 py-2 text-xs text-white/90 backdrop-blur-sm">
+      <span className="relative flex h-2 w-2 shrink-0">
         {online && (
           <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-teal opacity-75" />
         )}
         <span
           className={`relative inline-flex h-2 w-2 rounded-full ${
-            online ? "bg-teal" : "bg-paper/30"
+            online ? "bg-teal" : "bg-white/40"
           }`}
         />
       </span>
       {online ? (
         <span>
-          <span className="text-teal">Online now</span> — reply within
-          minutes
+          <span className="font-medium text-teal">Online now</span>
+          <span className="text-white/85"> — reply within minutes</span>
         </span>
       ) : (
-        <span className="flex items-center gap-1.5">
-          <Clock className="h-3 w-3" strokeWidth={2} />
+        <span className="flex items-center gap-1.5 text-white/85">
+          <Clock className="h-3 w-3 shrink-0" strokeWidth={2} />
           Offline — we&apos;ll reply within 24 hours
         </span>
       )}

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import ContactForm from "@/components/ContactForm";
 import Reveal from "@/components/Reveal";
 import LiveStatusBadge from "@/components/LiveStatusBadge";
@@ -16,6 +17,10 @@ import {
   Search,
   ClipboardList,
   Rocket,
+  Target,
+  BarChart3,
+  Megaphone,
+  Sparkles,
 } from "lucide-react";
 
 function WhatsappIcon(props: React.SVGProps<SVGSVGElement>) {
@@ -34,7 +39,7 @@ export const metadata = {
 
 /* Fluid type scale — continuous clamp() scaling, matches the rest of the site */
 const fluid = {
-  hero: "text-[clamp(1.85rem,5.6vw,3.25rem)] leading-[1.18]",
+  hero: "text-[clamp(2rem,6vw,3.6rem)] leading-[1.12]",
   h2: "text-[clamp(1.4rem,4vw,2.25rem)] leading-[1.2]",
   lead: "text-[clamp(0.95rem,1.8vw,1.125rem)] leading-relaxed",
   eyebrow: "text-[clamp(0.625rem,1.3vw,0.75rem)] tracking-[0.18em]",
@@ -52,15 +57,9 @@ const trustPoints = [
 const contactChannels = [
   {
     icon: Phone,
-    label: "Call us",
+    label: "Phone",
     value: "+91 7569622606",
     href: "tel:+917569622606",
-  },
-  {
-    icon: Mail,
-    label: "Email us",
-    value: "hello@gkdigitalsolutions.in",
-    href: "mailto:hello@gkdigitalsolutions.in",
   },
   {
     icon: WhatsappIcon,
@@ -69,9 +68,15 @@ const contactChannels = [
     href: WHATSAPP_LINK,
   },
   {
+    icon: Mail,
+    label: "Email",
+    value: "hello@gkdigitalsolutions.in",
+    href: "mailto:hello@gkdigitalsolutions.in",
+  },
+  {
     icon: MapPin,
-    label: "Visit us",
-    value: "Alluri Trade Centre, Bhagya Nagar Colony, Hyderabad",
+    label: "Our office",
+    value: "Alluri Trade Centre, Hyderabad",
     href: "#map",
   },
 ];
@@ -141,6 +146,11 @@ export default function ContactPage() {
           50% { transform: translateY(-3px); }
         }
         .icon-float { animation: icon-float 3.4s ease-in-out infinite; }
+        @keyframes banner-float {
+          0%, 100% { transform: translateY(0) rotate(0deg); }
+          50% { transform: translateY(-10px) rotate(4deg); }
+        }
+        .banner-icon { animation: banner-float 5s ease-in-out infinite; }
         @keyframes draw-line { from { transform: scaleX(0); } to { transform: scaleX(1); } }
         .step-line { animation: draw-line 1.4s ease-out forwards; transform-origin: left; }
         @keyframes shimmer-sweep {
@@ -155,170 +165,191 @@ export default function ContactPage() {
           background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
           animation: shimmer-sweep 3.2s ease-in-out infinite;
         }
+        .gc-card { transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease; }
+        .gc-card:hover { transform: translateY(-4px); box-shadow: 0 16px 34px rgba(0,0,0,0.22); }
         @media (prefers-reduced-motion: reduce) {
-          .mesh-blob, .eyebrow-underline::after, .icon-float, .step-line, .shimmer-btn::after {
+          .mesh-blob, .eyebrow-underline::after, .icon-float, .banner-icon, .step-line, .shimmer-btn::after {
             animation: none !important;
           }
+          .gc-card:hover { transform: none; }
         }
       `}</style>
 
-      {/* Hero */}
-      <section className="relative overflow-hidden border-b border-line pt-28 sm:pt-32 md:pt-40 pb-16 sm:pb-20">
+      {/* Banner hero — brand gradient with floating digital-marketing icons */}
+      <section className="relative overflow-hidden">
         <div
-          className="mesh-blob pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full opacity-20 blur-3xl sm:-right-32 sm:-top-32 sm:h-96 sm:w-96"
-          style={{ background: "linear-gradient(135deg, var(--signal), var(--teal))" }}
-          aria-hidden="true"
-        />
-        <div className="relative mx-auto max-w-3xl min-w-0 px-5 sm:px-6">
+          className="relative flex min-h-[280px] flex-col items-center justify-center px-5 py-24 text-center sm:min-h-[320px] sm:py-28"
+          style={{ background: "linear-gradient(120deg, #123b4f 0%, #1c2b52 50%, #3c1f57 100%)" }}
+        >
+          <Image
+  src="/images/contact-banner.png"
+  alt=""
+  fill
+  className="object-cover opacity-40"
+  priority
+/>
+          <div
+            className="absolute inset-0"
+            style={{ background: "linear-gradient(120deg, rgba(18,59,79,0.75) 0%, rgba(28,43,82,0.75) 50%, rgba(60,31,87,0.75) 100%)" }}
+            aria-hidden="true"
+          />
+          <div
+            className="pointer-events-none absolute -left-10 top-6 h-40 w-40 rounded-full opacity-25 blur-3xl sm:h-56 sm:w-56"
+            style={{ background: "var(--signal)" }}
+            aria-hidden="true"
+          />
+          <div
+            className="pointer-events-none absolute -right-10 bottom-0 h-40 w-40 rounded-full opacity-25 blur-3xl sm:h-56 sm:w-56"
+            style={{ background: "var(--teal)" }}
+            aria-hidden="true"
+          />
+
+          <div className="banner-icon pointer-events-none absolute left-[8%] top-[22%] hidden h-11 w-11 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-sm sm:flex">
+            <Target className="h-5 w-5 text-white/80" strokeWidth={1.75} />
+          </div>
+          <div
+            className="banner-icon pointer-events-none absolute right-[10%] top-[18%] hidden h-11 w-11 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-sm sm:flex"
+            style={{ animationDelay: "1.2s" }}
+          >
+            <BarChart3 className="h-5 w-5 text-white/80" strokeWidth={1.75} />
+          </div>
+          <div
+            className="banner-icon pointer-events-none absolute left-[14%] bottom-[16%] hidden h-11 w-11 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-sm sm:flex"
+            style={{ animationDelay: "2.4s" }}
+          >
+            <Megaphone className="h-5 w-5 text-white/80" strokeWidth={1.75} />
+          </div>
+          <div
+            className="banner-icon pointer-events-none absolute right-[16%] bottom-[20%] hidden h-11 w-11 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-sm sm:flex"
+            style={{ animationDelay: "0.6s" }}
+          >
+            <Sparkles className="h-5 w-5 text-white/80" strokeWidth={1.75} />
+          </div>
+
           <Reveal>
-            <span className={`inline-flex items-center gap-2 rounded-full border border-line px-3 py-1 font-mono uppercase text-paper/50 ${fluid.eyebrow}`}>
+            <span className={`inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 font-mono uppercase text-white/70 backdrop-blur-sm ${fluid.eyebrow}`}>
               <MessageCircle className="icon-float h-3 w-3" strokeWidth={2} />
               Contact
             </span>
           </Reveal>
           <Reveal delay={80}>
-            <h1 className={`mt-4 break-words font-display font-semibold tracking-tight text-paper ${fluid.hero}`}>
+            <h1 className={`relative z-10 mt-4 max-w-2xl break-words font-display font-semibold tracking-tight text-white ${fluid.hero}`}>
               Let&apos;s start growing your business today.
             </h1>
           </Reveal>
           <Reveal delay={160}>
-            <p className={`mt-4 text-paper/60 sm:mt-5 ${fluid.lead}`}>
+            <p className={`relative z-10 mx-auto mt-4 max-w-xl text-white/70 sm:mt-5 ${fluid.lead}`}>
               Fill out the form below or reach out directly — our team
               typically responds within 24 hours.
             </p>
           </Reveal>
-
-          <Reveal delay={240}>
-            <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3 sm:mt-8 sm:gap-x-8">
-              {trustPoints.map((t) => (
-                <div
-                  key={t.label}
-                  className="flex items-center gap-2 text-[11px] text-paper/50 sm:text-xs"
-                >
-                  <t.icon className="h-3.5 w-3.5 shrink-0 text-signal" strokeWidth={2} />
-                  {t.label}
-                </div>
-              ))}
-            </div>
-          </Reveal>
-
-          <Reveal delay={300}>
-            <div className="mt-5">
+          <Reveal delay={220}>
+            <div className="relative z-10 mt-6">
               <LiveStatusBadge />
             </div>
           </Reveal>
         </div>
       </section>
 
-      {/* Contact channel cards */}
-      <section className="border-b border-line py-10 sm:py-14">
-        <div className="mx-auto max-w-6xl px-5 sm:px-6">
-          <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4">
-            {contactChannels.map((c, i) => (
-              <Reveal key={c.label} delay={i * 70}>
-                <a
-                  href={c.href}
-                  target={c.href.startsWith("http") ? "_blank" : undefined}
-                  rel={c.href.startsWith("http") ? "noopener noreferrer" : undefined}
-                  className="group flex h-full min-w-0 flex-col gap-3 rounded-2xl border border-line bg-ink-panel/30 p-5 transition-all duration-300 hover:-translate-y-1 hover:border-signal/40 sm:p-6"
-                >
-                  <div
-                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110"
-                    style={{
-                      background: "linear-gradient(135deg, var(--signal), var(--teal))",
-                    }}
-                  >
-                    <c.icon className="h-4.5 w-4.5 text-white" strokeWidth={1.75} />
-                  </div>
-                  <div className="min-w-0">
-                    <div className="font-mono text-[9px] uppercase tracking-wider text-paper/40 sm:text-[10px]">
-                      {c.label}
-                    </div>
-                    <div className="mt-1 truncate text-[13px] font-medium text-paper sm:text-sm">
-                      {c.value}
-                    </div>
-                  </div>
-                </a>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Form + sidebar */}
+      {/* Get in touch — 2x2 contact cards + map on the left, form on the right */}
       <section className="border-b border-line py-14 sm:py-16 md:py-20">
-        <div className="mx-auto grid max-w-6xl min-w-0 gap-8 px-5 sm:px-6 md:grid-cols-[1.3fr_1fr] md:gap-12">
-          <Reveal>
-            <div className="min-w-0">
-              <ContactForm />
-            </div>
-          </Reveal>
-
+        <div className="mx-auto grid max-w-6xl min-w-0 gap-8 px-5 sm:px-6 md:grid-cols-[1fr_1.2fr] md:gap-12">
+          {/* left: contact cards + map */}
           <div className="min-w-0 space-y-5 sm:space-y-6">
-            <Reveal delay={80}>
-              <div className="rounded-2xl border border-line bg-ink-panel/40 p-6 sm:p-8">
-                <h3 className="font-mono text-[10px] uppercase tracking-wider text-paper/40 sm:text-[11px]">
-                  Contact details
-                </h3>
-                <ul className="mt-4 space-y-3.5 sm:mt-5 sm:space-y-4">
-                  <li className="flex items-start gap-3 text-[13px] text-paper/70 sm:text-sm">
-                    <Phone className="mt-0.5 h-4 w-4 shrink-0 text-signal" strokeWidth={1.75} />
-                    <a href="tel:+917569622606" className="hover:text-paper">
-                      +91 7569622606
-                    </a>
-                  </li>
-                  <li className="flex items-start gap-3 text-[13px] text-paper/70 sm:text-sm">
-                    <Mail className="mt-0.5 h-4 w-4 shrink-0 text-signal" strokeWidth={1.75} />
-                    <a href="mailto:hello@gkdigitalsolutions.in" className="break-all hover:text-paper">
-                      hello@gkdigitalsolutions.in
-                    </a>
-                  </li>
-                  <li className="flex items-start gap-3 text-[13px] text-paper/70 sm:text-sm">
-                    <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-signal" strokeWidth={1.75} />
-                    Alluri Trade Centre, Bhagya Nagar Colony Rd,
-                    Bhagya Nagar Colony, Venkat Nagar Colony,
-                    Hyderabad, Telangana 500072
-                  </li>
-                  <li className="flex items-start gap-3 text-[13px] text-paper/70 sm:text-sm">
-                    <Clock className="mt-0.5 h-4 w-4 shrink-0 text-signal" strokeWidth={1.75} />
-                    Monday–Saturday, 9:30 AM – 6:30 PM
-                  </li>
-                </ul>
+            <Reveal>
+              <div className="grid grid-cols-2 gap-3.5 sm:gap-4">
+                {contactChannels.map((c, i) => (
+                  <a
+                    key={c.label}
+                    href={c.href}
+                    target={c.href.startsWith("http") ? "_blank" : undefined}
+                    rel={c.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                    className="gc-card group flex min-w-0 flex-col items-center gap-2.5 rounded-2xl border border-line bg-ink-panel/40 p-5 text-center sm:p-6"
+                  >
+                    <div
+                      className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110"
+                      style={{ background: "linear-gradient(135deg, var(--signal), var(--teal))" }}
+                    >
+                      <c.icon className="h-4.5 w-4.5 text-white" strokeWidth={1.75} />
+                    </div>
+                    <div className="min-w-0">
+                      <div className="font-display text-[13px] font-semibold text-paper sm:text-sm">
+                        {c.label}
+                      </div>
+                      <div className="mt-0.5 truncate text-[11px] text-paper/55 sm:text-xs">
+                        {c.value}
+                      </div>
+                    </div>
+                  </a>
+                ))}
               </div>
             </Reveal>
 
-            <Reveal delay={140}>
-              <a
-                href={WHATSAPP_LINK}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="shimmer-btn group relative flex min-h-[48px] items-center justify-center gap-2 overflow-hidden rounded-full px-6 font-mono text-[12px] uppercase tracking-wider text-white transition-transform hover:scale-[1.02] sm:text-[13px]"
-                style={{
-                  background: "linear-gradient(90deg, var(--signal), var(--teal))",
-                }}
-              >
-                <WhatsappIcon className="relative h-4 w-4" />
-                <span className="relative">Chat on WhatsApp</span>
-              </a>
+            <Reveal delay={100}>
+              <div id="map" className="relative overflow-hidden rounded-2xl border border-line">
+                <div
+                  className="absolute right-3 top-3 z-10 flex items-center gap-1.5 rounded-full px-3 py-1.5 font-mono text-[9px] uppercase tracking-wider text-white shadow-lg sm:right-4 sm:top-4 sm:gap-2 sm:px-4 sm:py-2 sm:text-[11px]"
+                  style={{ background: "linear-gradient(90deg, var(--signal), var(--teal))" }}
+                >
+                  <MapPin className="h-3 w-3 shrink-0 sm:h-3.5 sm:w-3.5" strokeWidth={2} />
+                  <span className="hidden sm:inline">Office Address</span>
+                  <span className="sm:hidden">Office</span>
+                </div>
+                <iframe
+                  title="GK Digital Solutions — Alluri Trade Centre, Hyderabad"
+                  src="https://maps.google.com/maps?q=Alluri%20Trade%20Centre%2C%20Bhagya%20Nagar%20Colony%20Rd%2C%20Bhagya%20Nagar%20Colony%2C%20Venkat%20Nagar%20Colony%2C%20Hyderabad%2C%20Telangana%20500072&t=&z=16&ie=UTF8&iwloc=&output=embed"
+                  width="100%"
+                  height="260"
+                  className="sm:h-[300px]"
+                  style={{ border: 0, filter: "grayscale(0.3) contrast(1.05)" }}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                />
+              </div>
             </Reveal>
 
-            <Reveal delay={200}>
-              <div className="rounded-2xl border border-dashed border-line p-5 text-center sm:p-6">
-                <p className="text-[11px] text-paper/40 sm:text-xs">
-                  Prefer a quick call? Book a free 15-minute strategy
-                  session — no pressure, no jargon.
-                </p>
-                <Link
+            <Reveal delay={150}>
+              <div className="flex flex-wrap items-center gap-x-5 gap-y-2.5 rounded-2xl border border-dashed border-line p-4 text-[11px] text-paper/50 sm:text-xs">
+                {trustPoints.map((t) => (
+                  <div key={t.label} className="flex items-center gap-1.5">
+                    <t.icon className="h-3.5 w-3.5 shrink-0 text-signal" strokeWidth={2} />
+                    {t.label}
+                  </div>
+                ))}
+              </div>
+            </Reveal>
+          </div>
+
+          {/* right: get in touch form */}
+          <Reveal delay={100}>
+            <div className="min-w-0 rounded-[24px] border border-line bg-ink-panel/40 p-6 sm:p-8 md:p-10">
+              <span className={`font-mono uppercase text-signal ${fluid.eyebrow}`}>Get in touch</span>
+              <h2 className={`mt-2 font-display font-semibold tracking-tight text-paper ${fluid.h2}`}>
+                Tell us about your business
+              </h2>
+              <p className="mt-3 text-[13px] leading-relaxed text-paper/60 sm:text-sm">
+                Share a few details and we&apos;ll come back with a clear,
+                honest read on where your marketing stands — no jargon,
+                no obligation.
+              </p>
+              <div className="mt-6">
+                <ContactForm />
+              </div>
+
+              <div className="mt-6 border-t border-line pt-5">
+                <a
                   href={WHATSAPP_LINK}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-3 inline-block font-mono text-[11px] uppercase tracking-wider text-signal hover:underline sm:text-[12px]"
+                  className="shimmer-btn group relative flex min-h-[48px] items-center justify-center gap-2 overflow-hidden rounded-full px-6 font-mono text-[12px] uppercase tracking-wider text-white transition-transform hover:scale-[1.02] sm:text-[13px]"
+                  style={{ background: "linear-gradient(90deg, var(--signal), var(--teal))" }}
                 >
-                  Book a call →
-                </Link>
+                  <WhatsappIcon className="relative h-4 w-4" />
+                  <span className="relative">Chat on WhatsApp instead</span>
+                </a>
               </div>
-            </Reveal>
-          </div>
+            </div>
+          </Reveal>
         </div>
       </section>
 
@@ -367,47 +398,6 @@ export default function ContactPage() {
               ))}
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* Map */}
-      <section id="map" className="border-b border-line py-14 sm:py-16 md:py-20">
-        <div className="mx-auto max-w-6xl min-w-0 px-5 sm:px-6">
-          <Reveal>
-            <span className={`eyebrow-underline font-mono uppercase text-teal ${fluid.eyebrow}`}>Find us</span>
-            <h2 className={`mt-2 font-display font-semibold text-paper ${fluid.h2}`}>
-              Our office address
-            </h2>
-            <p className="mt-3 max-w-2xl text-[13px] text-paper/60 sm:text-base">
-              We&apos;re local to Hyderabad but work with clients remotely
-              across regions — regular calls and reports keep
-              communication seamless either way.
-            </p>
-          </Reveal>
-          <Reveal delay={100}>
-            <div className="relative mt-6 overflow-hidden rounded-2xl border border-line sm:mt-8">
-              <div
-                className="absolute right-3 top-3 z-10 flex items-center gap-1.5 rounded-full px-3 py-1.5 font-mono text-[9px] uppercase tracking-wider text-white shadow-lg sm:right-4 sm:top-4 sm:gap-2 sm:px-4 sm:py-2 sm:text-[11px]"
-                style={{
-                  background: "linear-gradient(90deg, var(--signal), var(--teal))",
-                }}
-              >
-                <MapPin className="h-3 w-3 shrink-0 sm:h-3.5 sm:w-3.5" strokeWidth={2} />
-                <span className="hidden sm:inline">Office Address</span>
-                <span className="sm:hidden">Office</span>
-              </div>
-              <iframe
-                title="GK Digital Solutions — Alluri Trade Centre, Hyderabad"
-                src="https://maps.google.com/maps?q=Alluri%20Trade%20Centre%2C%20Bhagya%20Nagar%20Colony%20Rd%2C%20Bhagya%20Nagar%20Colony%2C%20Venkat%20Nagar%20Colony%2C%20Hyderabad%2C%20Telangana%20500072&t=&z=16&ie=UTF8&iwloc=&output=embed"
-                width="100%"
-                height="300"
-                className="sm:h-[360px]"
-                style={{ border: 0, filter: "grayscale(0.3) contrast(1.05)" }}
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-              />
-            </div>
-          </Reveal>
         </div>
       </section>
 
