@@ -984,46 +984,189 @@ function Process() {
   );
 }
 
-// ---------- Why Choose Us teaser ----------
+// ---------- Why Choose Us — infographic style ----------
 const whyPoints = [
-  "Strategy before execution, always",
-  "Full-service under one roof",
-  "Transparent, jargon-free reporting",
-  "Real team, not a ticket number",
+  { icon: Target, text: "Strategy before execution, always" },
+  { icon: Building2, text: "Full-service under one roof" },
+  { icon: BarChart3, text: "Transparent, jargon-free reporting" },
+  { icon: Users, text: "Real team, not a ticket number" },
 ];
 
 function WhyChooseTeaser() {
+  const [linesVisible, setLinesVisible] = useState(false);
+  const wrapRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = wrapRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setLinesVisible(true);
+        } else {
+          setLinesVisible(false);
+        }
+      },
+      { threshold: 0.3 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
   return (
     <section className="relative bg-ink-panel/60 py-14 sm:py-16 md:py-24">
       <ChevronDivider className="absolute -top-[11px] left-1/2 -translate-x-1/2" />
-      <div className="mx-auto grid max-w-6xl gap-8 px-5 sm:px-6 md:grid-cols-2 md:items-center md:gap-12">
-        <Reveal direction="left">
-          <span className={`font-mono uppercase text-signal ${fluid.eyebrow}`}>Why us</span>
-          <h2 className={`mt-2 font-display font-extrabold tracking-tight text-paper sm:mt-3 ${fluid.h2}`}>
-            We don&apos;t just run campaigns — we build growth systems.
-          </h2>
-          <p className={`mt-3 text-paper/60 sm:mt-4 ${fluid.body}`}>
-            Every engagement starts with an honest audit, not a sales
-            pitch. If we don&apos;t think we can move the needle for you,
-            we&apos;ll tell you that too.
-          </p>
-          <Link href="/why-choose-us" className="mt-5 inline-flex items-center gap-1 font-mono text-[11px] uppercase tracking-wider text-signal hover:underline sm:mt-6 sm:text-[12px]">
-            See the full difference
-            <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={2} />
-          </Link>
+      <style>{`
+        @keyframes hubPulse {
+          0%, 100% { box-shadow: 0 0 0 0 rgba(111,168,191,0.45); }
+          50% { box-shadow: 0 0 0 14px rgba(111,168,191,0); }
+        }
+        @keyframes dotPulse {
+          0%, 100% { transform: scale(1); opacity: 1; }
+          50% { transform: scale(1.4); opacity: 0.6; }
+        }
+        .why-line {
+          stroke-dasharray: 400;
+          stroke-dashoffset: 400;
+          transition: stroke-dashoffset 1.1s cubic-bezier(0.4,0,0.2,1);
+        }
+        .why-line.visible { stroke-dashoffset: 0; }
+        .why-dot {
+          opacity: 0;
+          transform-origin: center;
+          transition: opacity 0.3s ease;
+        }
+        .why-dot.visible {
+          opacity: 1;
+          animation: dotPulse 2.2s ease-in-out infinite;
+        }
+        .why-hub {
+          animation: hubPulse 2.8s ease-in-out infinite;
+        }
+        .why-card {
+          opacity: 0;
+          transform: translateX(24px);
+          transition: opacity 0.6s ease-out, transform 0.6s ease-out, box-shadow 0.25s ease, translate 0.25s ease;
+        }
+        .why-card.visible { opacity: 1; transform: translateX(0); }
+        .why-card:hover {
+          box-shadow: 0 8px 28px rgba(0,0,0,0.28);
+          transform: translateX(0) translateY(-3px);
+        }
+        .why-icon-circle {
+          transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+        .why-card:hover .why-icon-circle {
+          transform: scale(1.08);
+          border-color: #9ec8db;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .why-line, .why-dot, .why-hub, .why-card, .why-icon-circle { animation: none !important; transition: none !important; }
+          .why-line { stroke-dashoffset: 0 !important; }
+          .why-dot, .why-card { opacity: 1 !important; transform: none !important; }
+        }
+      `}</style>
+      <div className="mx-auto max-w-6xl px-5 sm:px-6">
+        <Reveal>
+          <div className="text-center">
+            <span className={`font-mono uppercase text-signal ${fluid.eyebrow}`}>Why us</span>
+            <h2 className={`mt-2 mx-auto max-w-2xl font-display font-extrabold tracking-tight text-paper ${fluid.h2}`}>
+              We don&apos;t just run campaigns — we build growth systems.
+            </h2>
+            <p className={`mt-3 mx-auto max-w-xl text-paper/60 ${fluid.body}`}>
+              Every engagement starts with an honest audit, not a sales
+              pitch. If we don&apos;t think we can move the needle for you,
+              we&apos;ll tell you that too.
+            </p>
+          </div>
         </Reveal>
 
-        <Reveal delay={100} direction="right">
-          <div className="space-y-2.5 sm:space-y-3">
-            {whyPoints.map((p, i) => (
-              <div
-                key={p}
-                className="flex items-center gap-3 rounded-xl bg-ink-panel p-3.5 shadow-[0_2px_16px_rgba(109,58,242,0.06)] transition-transform duration-200 hover:-translate-y-0.5 sm:p-4"
+        <Reveal delay={100}>
+          <div
+            ref={wrapRef}
+            className="relative mt-10 overflow-hidden rounded-[24px] sm:mt-14"
+            style={{
+              background:
+                "linear-gradient(115deg, #123b4f 0%, #123b4f 46%, #2a4d63 47%, #3c5f74 100%)",
+            }}
+          >
+            <div className="relative min-h-[420px] px-4 py-10 sm:min-h-[500px] sm:px-10 sm:py-14">
+              <svg
+                viewBox="0 0 680 500"
+                className="pointer-events-none absolute inset-0 hidden h-full w-full sm:block"
+                aria-hidden="true"
+                preserveAspectRatio="none"
               >
-                <CheckCircle2 className="h-4 w-4 shrink-0" strokeWidth={2} style={{ color: i % 2 === 0 ? "var(--signal)" : "var(--teal)" }} />
-                <span className="text-[13px] text-paper/70 sm:text-sm">{p}</span>
+                <path className={`why-line ${linesVisible ? "visible" : ""}`} style={{ transitionDelay: "0ms" }} d="M 130 250 C 260 250 260 90 340 90" stroke="#ffffff" strokeWidth="2.5" fill="none" opacity="0.85" />
+                <path className={`why-line ${linesVisible ? "visible" : ""}`} style={{ transitionDelay: "120ms" }} d="M 130 250 C 260 250 260 190 340 190" stroke="#ffffff" strokeWidth="2.5" fill="none" opacity="0.85" />
+                <path className={`why-line ${linesVisible ? "visible" : ""}`} style={{ transitionDelay: "240ms" }} d="M 130 250 C 260 250 260 320 340 320" stroke="#ffffff" strokeWidth="2.5" fill="none" opacity="0.85" />
+                <path className={`why-line ${linesVisible ? "visible" : ""}`} style={{ transitionDelay: "360ms" }} d="M 130 250 C 260 250 260 420 340 420" stroke="#ffffff" strokeWidth="2.5" fill="none" opacity="0.85" />
+                <line className={`why-line ${linesVisible ? "visible" : ""}`} style={{ transitionDelay: "0ms" }} x1="340" y1="90" x2="380" y2="90" stroke="#ffffff" strokeWidth="2.5" opacity="0.85" />
+                <line className={`why-line ${linesVisible ? "visible" : ""}`} style={{ transitionDelay: "120ms" }} x1="340" y1="190" x2="380" y2="190" stroke="#ffffff" strokeWidth="2.5" opacity="0.85" />
+                <line className={`why-line ${linesVisible ? "visible" : ""}`} style={{ transitionDelay: "240ms" }} x1="340" y1="320" x2="380" y2="320" stroke="#ffffff" strokeWidth="2.5" opacity="0.85" />
+                <line className={`why-line ${linesVisible ? "visible" : ""}`} style={{ transitionDelay: "360ms" }} x1="340" y1="420" x2="380" y2="420" stroke="#ffffff" strokeWidth="2.5" opacity="0.85" />
+                <circle className={`why-dot ${linesVisible ? "visible" : ""}`} style={{ transitionDelay: "900ms", animationDelay: "900ms" }} cx="360" cy="90" r="7" fill="#ffffff" />
+                <circle className={`why-dot ${linesVisible ? "visible" : ""}`} style={{ transitionDelay: "1020ms", animationDelay: "1020ms" }} cx="360" cy="190" r="7" fill="#ffffff" />
+                <circle className={`why-dot ${linesVisible ? "visible" : ""}`} style={{ transitionDelay: "1140ms", animationDelay: "1140ms" }} cx="360" cy="320" r="7" fill="#ffffff" />
+                <circle className={`why-dot ${linesVisible ? "visible" : ""}`} style={{ transitionDelay: "1260ms", animationDelay: "1260ms" }} cx="360" cy="420" r="7" fill="#ffffff" />
+              </svg>
+
+              {/* hub circle */}
+              <div
+                className="why-hub relative z-10 mx-auto flex h-[130px] w-[130px] flex-col items-center justify-center gap-1.5 rounded-full text-center sm:absolute sm:left-[60px] sm:top-[180px] sm:mx-0"
+                style={{ background: "#0f2f40", border: "5px solid #6fa8bf" }}
+              >
+                <TrendingUp className="h-6 w-6" style={{ color: "#eaf3f7" }} strokeWidth={1.75} />
+                <span className="text-[11px] font-medium leading-tight" style={{ color: "#eaf3f7" }}>
+                  Why choose us
+                </span>
               </div>
-            ))}
+
+              {/* cards */}
+              <div className="relative z-10 mt-8 flex flex-col gap-4 sm:mt-0">
+                {whyPoints.map((p, i) => {
+                  const topPx = [40, 140, 250, 350][i];
+                  return (
+                    <div
+                      key={p.text}
+                      className={`why-card flex items-center sm:absolute sm:left-[480px] sm:right-6 ${linesVisible ? "visible" : ""}`}
+                      style={{
+                        top: `${topPx}px`,
+                        transform: "translateY(-50%)",
+                        transitionDelay: `${400 + i * 130}ms`,
+                      }}
+                    >
+                      <div
+                        className="why-icon-circle z-10 flex h-14 w-14 shrink-0 items-center justify-center rounded-full sm:h-16 sm:w-16"
+                        style={{ background: "#0f2f40", border: "4px solid #6fa8bf" }}
+                      >
+                        <p.icon className="h-5 w-5" style={{ color: "#eaf3f7" }} strokeWidth={1.75} />
+                      </div>
+                      <div className="-ml-16 flex-1 w-20px rounded-full bg-white py-2.5 pl-10 pr-5 shadow-lg sm:py-3">
+                        <span className="block ml-10 text-[9px] font-semibold uppercase tracking-wider text-[#7a8a92]">
+                          Growth system
+                        </span>
+                        <p className="mt-1 ml-10 text-[13px] font-medium text-[#1c2b33] sm:text-sm">
+                          {p.text}
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </Reveal>
+
+        <Reveal delay={150}>
+          <div className="mt-6 text-center sm:mt-8">
+            <Link
+              href="/why-choose-us"
+              className="inline-flex items-center gap-1 font-mono text-[11px] uppercase tracking-wider text-signal hover:underline sm:text-[12px]"
+            >
+              See the full difference
+              <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={2} />
+            </Link>
           </div>
         </Reveal>
       </div>
